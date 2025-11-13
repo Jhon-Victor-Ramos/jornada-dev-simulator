@@ -1,4 +1,4 @@
-# DevLife: Jornada Dev Simulator
+<h1 align="center">DevLife: Jornada Dev Simulator</h1>
 
 ## Sobre o Projeto
 
