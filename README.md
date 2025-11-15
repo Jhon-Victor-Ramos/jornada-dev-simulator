@@ -44,6 +44,35 @@ mvn exec:java -Dexec.mainClass="br.com.devlife.simulator.Main"
 
 ---
 
+## Fluxo de Trabalho de Desenvolvimento
+
+Para garantir consistência e agilidade no desenvolvimento, é necessário que a equipe deve siga um fluxo de trabalho de duas fases.
+
+### Fase 1: Desenvolvimento Rápido (Dentro do IntelliJ)
+
+1.  **Edite o código** nas suas classes `.java`.
+2.  **Salve** os arquivos.
+3.  **Clique no botão verde "Play" (Run)** ao lado do método `main` na classe `Main.java` para executar o jogo diretamente no console da IDE.
+
+> **Nota:** A limpeza de tela no console do IntelliJ é **simulada** (imprimindo várias linhas em branco). Use esta fase para validar a lógica dos menus, cálculos de atributos e fluxo do jogo, mas não para avaliar a experiência visual final. Contudo, pode também simplesmente não limpar caso só rode usando a opção `RUN` da IDE.
+
+### Fase 2: Teste da Versão Final (Via Terminal)
+
+1.  **Construa o Pacote (`.jar`):**
+    *   No IntelliJ, abra o painel do **Maven** (geralmente na lateral direita).
+    *   Vá em **Lifecycle**.
+    *   Clique duas vezes em **`package`**. O Maven irá compilar e empacotar o projeto. Ao final, você verá uma mensagem de `BUILD SUCCESS`.
+
+2.  **Execute no Terminal Externo:**
+    *   Abra o terminal do seu sistema operacional (não o terminal do IntelliJ que aparece quando clicamos em `RUN`. Dentro do IntelliJ podemos acessar um terminal real pelo antepenúltimo símbolo do lado esquerdo da IDE, ou acessá-lo pelo seguinte atalho: Ctrl + `).
+    *   Navegue até a pasta raiz do projeto.
+    *   Execute o seguinte comando para rodar o jogo:
+    ```bash
+    java -jar target/jornada-dev-simulator-1.0-SNAPSHOT.jar
+    ```
+
+---
+
 ## Equipe
 
 *   Camilla Torquato - [GitHub](https://github.com/camilatorquato) | [LinkedIn](https://www.linkedin.com/in/camila-torquato-5b5356354?utm_source=share_via&utm_content=profile&utm_medium=member_android)
