@@ -56,7 +56,7 @@ public class TerminalUI {
         sb.append(ANSI_GREEN).append("=====================[ ").append(ANSI_REVERSED).append("DevLife").append(ANSI_RESET)
                 .append(ANSI_GREEN).append(" ]=====================").append(ANSI_RESET).append("\n\n");
 
-        sb.append(String.format("%sNome:%s %-23s | %sDinheiro:%s R$ %.2f\n",
+        sb.append(String.format("%sNome:%s %-18s | %sDinheiro:%s R$ %.2f | %Dias:%s \n",
                 ANSI_BOLD, ANSI_RESET, jogador.getNome(), ANSI_BOLD, ANSI_RESET, jogador.getDinheiro()));
         sb.append("-----------------------------------------------------\n");
 
