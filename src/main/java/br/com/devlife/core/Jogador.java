@@ -5,6 +5,7 @@ import br.com.devlife.domain.enums.NivelCargo;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
+import br.com.devlife.domain.enums.NivelHabilidade;
 
 public class Jogador {
     private final String nome;
@@ -16,8 +17,7 @@ public class Jogador {
     private int experiencia;
     private int networking;
     private NivelCargo cargo;
-    // Alterado para armazenar o nível da habilidade como String
-    private final Map<String, String> habilidades;
+    private final Map<String, NivelHabilidade> habilidades;
 
     public Jogador(String nome, AreaAtuacao areaAtuacao, NivelCargo cargoInicial) {
         this.nome = nome;
@@ -37,14 +37,15 @@ public class Jogador {
     private void inicializarHabilidadesPorArea() {
         switch (this.areaAtuacao) {
             case FRONTEND:
-                this.habilidades.put("HTML", "Iniciante");
-                this.habilidades.put("CSS", "Iniciante");
-                this.habilidades.put("JavaScript", "Iniciante");
+                // ANTES: this.habilidades.put("HTML", "Iniciante");
+                this.habilidades.put("HTML", NivelHabilidade.INICIANTE); // DEPOIS
+                this.habilidades.put("CSS", NivelHabilidade.INICIANTE);
+                this.habilidades.put("JavaScript", NivelHabilidade.INICIANTE);
                 break;
             case BACKEND:
-                this.habilidades.put("Java", "Iniciante");
-                this.habilidades.put("SQL", "Iniciante");
-                this.habilidades.put("API REST", "Iniciante");
+                this.habilidades.put("Java", NivelHabilidade.INICIANTE);
+                this.habilidades.put("SQL", NivelHabilidade.INICIANTE);
+                this.habilidades.put("API REST", NivelHabilidade.INICIANTE);
                 break;
         }
     }
@@ -88,34 +89,33 @@ public class Jogador {
      * @param habilidade O nome da habilidade a ser aprendida ou melhorada.
      */
     public void aprenderOuMelhorarHabilidade(String habilidade) {
-        String nivelAtual = this.habilidades.getOrDefault(habilidade, "Nenhum");
-        String novoNivel;
+        NivelHabilidade nivelAtual = this.habilidades.getOrDefault(habilidade, NivelHabilidade.NENHUM);
+        NivelHabilidade novoNivel;
 
         switch (nivelAtual) {
-            case "Nenhum":
-                novoNivel = "Iniciante";
+            case NENHUM:
+                novoNivel = NivelHabilidade.INICIANTE;
                 break;
-            case "Iniciante":
-                novoNivel = "Intermediário";
+            case INICIANTE:
+                novoNivel = NivelHabilidade.INTERMEDIARIO;
                 break;
-            case "Intermediário":
-                novoNivel = "Avançado";
+            case INTERMEDIARIO:
+                novoNivel = NivelHabilidade.AVANCADO;
                 break;
-            case "Avançado":
+            case AVANCADO:
                 System.out.println("Habilidade " + habilidade + " já está no nível máximo!");
-                return; // Encerra o método pois não há mais para onde progredir
+                return; // Encerra o método
             default:
-                // Caso encontre um valor inesperado, define como Iniciante
-                novoNivel = "Iniciante";
+                novoNivel = NivelHabilidade.INICIANTE; // Segurança
                 break;
         }
         this.habilidades.put(habilidade, novoNivel);
-        System.out.println("Habilidade " + habilidade + " melhorada para o nível " + novoNivel + "!");
+        System.out.println("Habilidade " + habilidade + " melhorada para o nível " + novoNivel.getNomeExibicao() + "!");
     }
 
     // Retorna o nível da habilidade como String
-    public String getNivelHabilidade(String habilidade) {
-        return this.habilidades.getOrDefault(habilidade, "Nenhum");
+    public NivelHabilidade getNivelHabilidade(String habilidade) {
+        return this.habilidades.getOrDefault(habilidade, NivelHabilidade.NENHUM); // DEPOIS
     }
 
     public boolean temDinheiroSuficiente(double valor) {
@@ -149,7 +149,7 @@ public class Jogador {
     public int getExperiencia() { return experiencia; }
     public int getNetworking() { return networking; }
     public NivelCargo getCargo() { return cargo; }
-    public Map<String, String> getHabilidades() { return new HashMap<>(habilidades); }
+    public Map<String, NivelHabilidade> getHabilidades() { return new HashMap<>(habilidades); }
     public void setCargo(NivelCargo novoCargo) { this.cargo = novoCargo; }
     public void setNetworking(int networking) { this.networking = networking; }
 

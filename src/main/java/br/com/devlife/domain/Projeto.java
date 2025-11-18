@@ -1,6 +1,7 @@
 package br.com.devlife.domain;
 
 import br.com.devlife.domain.enums.NivelCargo;
+import br.com.devlife.domain.enums.NivelHabilidade;
 
 import java.util.Collections;
 import java.util.Map;
@@ -14,9 +15,9 @@ public final class Projeto {
     private final int energiaCusto;
     private final int sanidadeCusto;
     private final int networkingGanho;
-    private final Map<String, Integer> requisitos; // Habilidades e níveis mínimos necessários
+    private final Map<String, NivelHabilidade> requisitos;
 
-    public Projeto(String nome, String descricao, int xpGanho, double dinheiroGanho, int energiaCusto, int sanidadeCusto, int networkingGanho, Map<String, Integer> requisitos) {
+    public Projeto(String nome, String descricao, int xpGanho, double dinheiroGanho, int energiaCusto, int sanidadeCusto, int networkingGanho, Map<String, NivelHabilidade> requisitos) {
         this.nome = Objects.requireNonNull(nome, "O nome não pode ser nulo.");
         this.descricao = Objects.requireNonNull(descricao, "A descrição não pode ser nula.");
         this.xpGanho = xpGanho;
@@ -55,20 +56,14 @@ public final class Projeto {
         return networkingGanho;
     }
 
-    public Map<String, Integer> getRequisitos() {
+    public Map<String, NivelHabilidade> getRequisitos() {
         return requisitos;
     }
 
     @Override
     public String toString() {
-        return "Projeto{" +
-                "nome='" + nome + '\'' +
-                ", xpGanho=" + xpGanho +
-                ", dinheiroGanho=" + dinheiroGanho +
-                ", energiaCusto=" + energiaCusto +
-                '}';
+        return "Projeto{" + "nome='" + nome + '\'' + ", xpGanho=" + xpGanho + ", dinheiroGanho=" + dinheiroGanho + ", energiaCusto=" + energiaCusto + '}';
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -76,7 +71,6 @@ public final class Projeto {
         Projeto projeto = (Projeto) o;
         return nome.equals(projeto.nome);
     }
-
     @Override
     public int hashCode() {
         return Objects.hash(nome);

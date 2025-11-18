@@ -1,68 +1,104 @@
 package br.com.devlife.systems;
 
 import br.com.devlife.core.Jogador;
+import br.com.devlife.domain.AcaoLazer;
 import br.com.devlife.domain.enums.AreaAtuacao;
 import br.com.devlife.domain.enums.NivelCargo;
 import br.com.devlife.ui.TerminalUI;
+import br.com.devlife.domain.Projeto;
+import java.util.List;
 
 public class MotorDoJogo {
+    private int diaAtual = 1;
+    private Jogador jogador;
+    private final TerminalUI terminal;
+    private final GerenciadorDeAcoes gerenciador;
+
+    public MotorDoJogo() {
+        this.terminal = new TerminalUI();
+        this.jogador = new Jogador("Dev Comum", AreaAtuacao.BACKEND, NivelCargo.ESTAGIARIO_INICIO);
+        this.gerenciador = new GerenciadorDeAcoes();
+    }
+
     public void iniciar() {
-        TerminalUI terminal = new TerminalUI();
-        Jogador jogador = new Jogador("Dev Comum", AreaAtuacao.BACKEND, NivelCargo.ESTAGIARIO_INICIO);
         String log = "Bem-vindo ao DevLife! Sua jornada como dev começa agora.";
         boolean jogoRodando = true;
 
         while (jogoRodando) {
+            if (jogador.getEnergia() <= 0) {
+                log = "Você ficou sem energia e desmaiou! O jogo acabou.";
+                terminal.exibirDashboard(jogador, log);
+                jogoRodando = false;
+                continue;
+            }
+
             terminal.exibirDashboard(jogador, log);
             int opcao = terminal.lerOpcao();
 
             switch (opcao) {
                 case 1:
-                    // 1. Exibe a mensagem de transição e espera
-                    terminal.exibirMensagemComDelay("Acessando projetos disponíveis...", 1500);
-                    // 2. Mostra o submenu de projetos e pega a escolha do usuário
-                    int escolhaProjeto = terminal.exibirSubMenuProjetos();
+                    terminal.exibirMensagemComDelay("Verificando projetos compatíveis com suas habilidades...", 1500);
+                    List<Projeto> projetosDisponiveis = gerenciador.getProjetosDisponiveis(jogador);
+                    int escolhaProjeto = terminal.exibirSubMenuProjetos(projetosDisponiveis);
 
-                    // 3. Processa a escolha do submenu
-                    if (escolhaProjeto == 1) { // Projeto Fácil
-                        log = "Você fez uma landing page. +10 XP, -15 Energia.";
-                        jogador.adicionarExperiencia(10);
-                        jogador.alterarRecursoVital("energia", -15);
-                    } else if (escolhaProjeto == 2) { // Projeto Médio
-                        log = "Você desenvolveu uma API. +25 XP, -25 Energia.";
-                        jogador.adicionarExperiencia(25);
-                        jogador.alterarRecursoVital("energia", -25);
-                    } else if (escolhaProjeto == 3) { // Projeto Difícil
-                        log = "Você corrigiu um bug crítico. +50 XP, -40 Energia, -10 Sanidade.";
-                        jogador.adicionarExperiencia(50);
-                        jogador.alterarRecursoVital("energia", -40);
-                        jogador.alterarRecursoVital("sanidade", -10);
-                    } else {
-                        // Se for 0 ou qualquer outra opção, apenas volta
+                    if (escolhaProjeto > 0 && escolhaProjeto <= projetosDisponiveis.size()) {
+                        Projeto projetoEscolhido = projetosDisponiveis.get(escolhaProjeto - 1);
+
+                        jogador.adicionarExperiencia(projetoEscolhido.getXpGanho());
+                        jogador.adicionarDinheiro(projetoEscolhido.getDinheiroGanho());
+                        jogador.alterarRecursoVital("energia", -projetoEscolhido.getEnergiaCusto());
+                        jogador.alterarRecursoVital("sanidade", -projetoEscolhido.getSanidadeCusto());
+                        jogador.setNetworking(jogador.getNetworking() + projetoEscolhido.getNetworkingGanho());
+
+                        log = "Você completou o projeto: '" + projetoEscolhido.getNome() + "'.";
+                        // Assumindo que um projeto leva 1 dia para ser concluído
+
+                    } else if (escolhaProjeto == 0) {
                         log = "Você decidiu não pegar nenhum projeto por enquanto.";
+                    } else {
+                        log = "Opção de projeto inválida.";
                     }
                     break;
                 case 2:
-                    // Lógica para "Estudar (Cursos)" - Siga o mesmo padrão do case 1
-                    terminal.exibirMensagemComDelay("Verificando cursos na plataforma...", 1500);
-                    // terminal.exibirSubMenuCursos(); // Você criaria este método na TerminalUI
-                    log = "Você fez um curso. +5 Sanidade, -10 Energia, -R$50.00.";
-                    jogador.alterarRecursoVital("sanidade", 5);
-                    jogador.alterarRecursoVital("energia", -10);
-                    jogador.gastarDinheiro(50.00);
+                    terminal.exibirMensagemComDelay("Funcionalidade de cursos ainda em desenvolvimento...", 1500);
+                    log = "Você decidiu não estudar hoje.";
                     break;
                 case 3:
-                    // Lógica para "Cuidar de Si"
-                    log = "Você tirou um tempo para relaxar. +15 Saúde, +10 Sanidade.";
-                    jogador.alterarRecursoVital("saude", 15);
-                    jogador.alterarRecursoVital("sanidade", 10);
-                    break;
-                // ... outros casos
+                    terminal.exibirMensagemComDelay("Verificando o que você pode fazer para relaxar...", 1500);
+                    List<AcaoLazer> acoesDisponiveis = gerenciador.getAcoesLazerDisponiveis(jogador);
+                    int escolhaAcao = terminal.exibirSubMenuCuidarDeSi(acoesDisponiveis);
 
+                    if (escolhaAcao > 0 && escolhaAcao <= acoesDisponiveis.size()) {
+                        AcaoLazer acaoEscolhida = acoesDisponiveis.get(escolhaAcao - 1);
+
+                        jogador.gastarDinheiro(acaoEscolhida.getCustoDinheiro());
+                        jogador.alterarRecursoVital("energia", acaoEscolhida.getBonusEnergia());
+                        jogador.alterarRecursoVital("saude", acaoEscolhida.getBonusSaude());
+                        jogador.alterarRecursoVital("sanidade", acaoEscolhida.getBonusSanidade());
+
+                        if (acaoEscolhida.getDuracaoEmDias() > 0) {
+                            avancarDias(acaoEscolhida.getDuracaoEmDias());
+                        }
+
+                        log = "Você decidiu: " + acaoEscolhida.getNome();
+                    } else if (escolhaAcao == 0) {
+                        log = "Você decidiu focar no trabalho por enquanto.";
+                    } else {
+                        log = "Opção de lazer inválida.";
+                    }
+                    break;
                 default:
                     log = "Opção inválida, tente novamente.";
                     break;
             }
+        }
+        terminal.exibirMensagemComDelay("Fim de jogo. Obrigado por jogar!", 3000);
+    }
+
+    private void avancarDias(int dias) {
+        for (int i = 0; i < dias; i++) {
+            this.diaAtual++;
+            jogador.alterarRecursoVital("energia", 40);
         }
     }
 }

@@ -1,6 +1,9 @@
 package br.com.devlife.ui;
 
 import br.com.devlife.core.Jogador;
+import br.com.devlife.domain.AcaoLazer;
+import br.com.devlife.domain.Projeto;
+import br.com.devlife.domain.enums.NivelHabilidade;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -99,14 +102,46 @@ public class TerminalUI {
     /**
      * Exemplo de um submenu para a ação "Trabalhar em Projetos".
      */
-    public int exibirSubMenuProjetos() {
+    public int exibirSubMenuProjetos(List<Projeto> projetos) {
         limparTela();
         StringBuilder sb = new StringBuilder();
 
         sb.append(ANSI_BOLD).append("====================[ Projetos Disponíveis ]=====================").append(ANSI_RESET).append("\n\n");
-        sb.append(" 1. Criar landing page para cliente (Fácil)\n");
-        sb.append(" 2. Desenvolver API para e-commerce (Médio)\n");
-        sb.append(" 3. Corrigir bug em sistema legado (Difícil)\n");
+
+        if (projetos.isEmpty()) {
+            sb.append("  Nenhum projeto disponível no momento. Talvez você não tenha energia ou as habilidades necessárias.\n");
+        } else {
+            for (int i = 0; i < projetos.size(); i++) {
+                Projeto projeto = projetos.get(i);
+                // Formata a linha do menu com o número da opção, nome e descrição
+                sb.append(String.format(" %d. %s - %s\n", (i + 1), projeto.getNome(), projeto.getDescricao()));
+            }
+        }
+
+        sb.append("-----------------------------------------------------------\n");
+        sb.append(" 0. Voltar ao menu principal\n\n");
+
+        System.out.println(sb.toString());
+        return lerOpcao();
+    }
+
+    public int exibirSubMenuCuidarDeSi(List<AcaoLazer> acoes) {
+        limparTela();
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(ANSI_BOLD).append("====================[ Cuidar de Si ]=====================").append(ANSI_RESET).append("\n\n");
+
+        if (acoes.isEmpty()) {
+            sb.append("  Nenhuma ação de lazer disponível no momento (verifique seu dinheiro).\n");
+        } else {
+            for (int i = 0; i < acoes.size(); i++) {
+                AcaoLazer acao = acoes.get(i);
+                sb.append(String.format(" %d. %s - %s\n", (i + 1), acao.getNome(), acao.getDescricao()));
+                sb.append(String.format("    Custo: R$ %.2f | Energia: %+d | Sanidade: %+d | Saúde: %+d\n\n",
+                        acao.getCustoDinheiro(), acao.getBonusEnergia(), acao.getBonusSanidade(), acao.getBonusSaude()));
+            }
+        }
+
         sb.append("-----------------------------------------------------------\n");
         sb.append(" 0. Voltar ao menu principal\n\n");
 
@@ -139,17 +174,15 @@ public class TerminalUI {
                 ANSI_BOLD, nome + ":", ANSI_RESET, cor, barra, ANSI_RESET, percentualInteiro);
     }
 
-    private String formatarHabilidades(Map<String, String> habilidades) {
+    private String formatarHabilidades(Map<String, NivelHabilidade> habilidades) { // DEPOIS
         if (habilidades.isEmpty()) {
             return "  Nenhuma habilidade adquirida ainda.\n";
         }
 
         StringBuilder sb = new StringBuilder();
-        // Itera sobre o mapa de habilidades
-        for (Map.Entry<String, String> entry : habilidades.entrySet()) {
+        for (Map.Entry<String, NivelHabilidade> entry : habilidades.entrySet()) { // DEPOIS
             String habilidade = entry.getKey();
-            String nivel = entry.getValue();
-            // Formata a saída para melhor alinhamento
+            String nivel = entry.getValue().getNomeExibicao();
             sb.append(String.format("  - %-15s: %s\n", habilidade, nivel));
         }
         return sb.toString();
