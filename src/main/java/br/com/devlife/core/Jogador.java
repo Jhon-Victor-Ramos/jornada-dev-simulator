@@ -1,4 +1,5 @@
 package br.com.devlife.core;
+
 import br.com.devlife.domain.enums.AreaAtuacao;
 import br.com.devlife.domain.enums.NivelCargo;
 import java.util.HashMap;
@@ -15,7 +16,8 @@ public class Jogador {
     private int experiencia;
     private int networking;
     private NivelCargo cargo;
-    private final Map<String, Integer> habilidades;
+    // Alterado para armazenar o nível da habilidade como String
+    private final Map<String, String> habilidades;
 
     public Jogador(String nome, AreaAtuacao areaAtuacao, NivelCargo cargoInicial) {
         this.nome = nome;
@@ -35,19 +37,14 @@ public class Jogador {
     private void inicializarHabilidadesPorArea() {
         switch (this.areaAtuacao) {
             case FRONTEND:
-                this.habilidades.put("HTML", 1);
-                this.habilidades.put("CSS", 1);
-                this.habilidades.put("JavaScript", 1);
+                this.habilidades.put("HTML", "Iniciante");
+                this.habilidades.put("CSS", "Iniciante");
+                this.habilidades.put("JavaScript", "Iniciante");
                 break;
             case BACKEND:
-                this.habilidades.put("Java", 1);
-                this.habilidades.put("SQL", 1);
-                this.habilidades.put("API REST", 1);
-                break;
-            case FULLSTACK:
-                this.habilidades.put("HTML", 1);
-                this.habilidades.put("Java", 1);
-                this.habilidades.put("JavaScript", 1);
+                this.habilidades.put("Java", "Iniciante");
+                this.habilidades.put("SQL", "Iniciante");
+                this.habilidades.put("API REST", "Iniciante");
                 break;
         }
     }
@@ -85,14 +82,40 @@ public class Jogador {
         }
     }
 
+    /**
+     * Atualiza o nível de uma habilidade seguindo a progressão:
+     * (Nenhuma) -> Iniciante -> Intermediário -> Avançado
+     * @param habilidade O nome da habilidade a ser aprendida ou melhorada.
+     */
     public void aprenderOuMelhorarHabilidade(String habilidade) {
-        int nivelAtual = this.habilidades.getOrDefault(habilidade, 0);
-        this.habilidades.put(habilidade, nivelAtual + 1);
-        System.out.println("Habilidade " + habilidade + " melhorada para o nível " + (nivelAtual + 1) + "!");
+        String nivelAtual = this.habilidades.getOrDefault(habilidade, "Nenhum");
+        String novoNivel;
+
+        switch (nivelAtual) {
+            case "Nenhum":
+                novoNivel = "Iniciante";
+                break;
+            case "Iniciante":
+                novoNivel = "Intermediário";
+                break;
+            case "Intermediário":
+                novoNivel = "Avançado";
+                break;
+            case "Avançado":
+                System.out.println("Habilidade " + habilidade + " já está no nível máximo!");
+                return; // Encerra o método pois não há mais para onde progredir
+            default:
+                // Caso encontre um valor inesperado, define como Iniciante
+                novoNivel = "Iniciante";
+                break;
+        }
+        this.habilidades.put(habilidade, novoNivel);
+        System.out.println("Habilidade " + habilidade + " melhorada para o nível " + novoNivel + "!");
     }
 
-    public int getNivelHabilidade(String habilidade) {
-        return this.habilidades.getOrDefault(habilidade, 0);
+    // Retorna o nível da habilidade como String
+    public String getNivelHabilidade(String habilidade) {
+        return this.habilidades.getOrDefault(habilidade, "Nenhum");
     }
 
     public boolean temDinheiroSuficiente(double valor) {
@@ -126,7 +149,7 @@ public class Jogador {
     public int getExperiencia() { return experiencia; }
     public int getNetworking() { return networking; }
     public NivelCargo getCargo() { return cargo; }
-    public Map<String, Integer> getHabilidades() { return new HashMap<>(habilidades); }
+    public Map<String, String> getHabilidades() { return new HashMap<>(habilidades); }
     public void setCargo(NivelCargo novoCargo) { this.cargo = novoCargo; }
     public void setNetworking(int networking) { this.networking = networking; }
 

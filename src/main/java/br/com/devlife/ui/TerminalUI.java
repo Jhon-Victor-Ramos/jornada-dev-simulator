@@ -67,17 +67,18 @@ public class TerminalUI {
         sb.append(String.format("%sNetworking:%s %d\n", ANSI_BOLD, ANSI_RESET, jogador.getNetworking()));
         sb.append("\n");
 
-        sb.append(ANSI_BOLD).append(ANSI_CYAN).append("Top 5 Habilidades:").append(ANSI_RESET).append("\n");
-        sb.append(formatarHabilidades(jogador.getHabilidades()));
         sb.append("-----------------------------------------------------\n");
 
-        sb.append(ANSI_BOLD).append("LOG:").append(ANSI_RESET).append(" ").append(ANSI_ITALIC).append(log).append(ANSI_RESET).append("\n");
 
         sb.append(ANSI_BOLD).append("========================[ MENU ]=====================").append(ANSI_RESET).append("\n");
         sb.append(" 1. Trabalhar em Projetos     | 4. Procurar Vagas\n");
         sb.append(" 2. Estudar (Cursos)          | 5. Participar de Eventos\n");
         sb.append(" 3. Cuidar de Si              | 6. Ver Filmes\n");
         sb.append("-----------------------------------------------------\n");
+        sb.append("\n");
+        sb.append(ANSI_BOLD).append(ANSI_GREEN).append("==================[ Top 5 Habilidades ]===============").append(ANSI_RESET).append("\n");
+        sb.append(formatarHabilidades(jogador.getHabilidades()));
+        sb.append(ANSI_BOLD).append("LOG:").append(ANSI_RESET).append(" ").append(ANSI_ITALIC).append(log).append(ANSI_RESET).append("\n");
 
         System.out.println(sb.toString());
     }
@@ -138,19 +139,20 @@ public class TerminalUI {
                 ANSI_BOLD, nome + ":", ANSI_RESET, cor, barra, ANSI_RESET, percentualInteiro);
     }
 
-    private String formatarHabilidades(Map<String, Integer> habilidades) {
-        if (habilidades == null || habilidades.isEmpty()) {
-            return "↳ Nenhuma habilidade aprendida.\n";
+    private String formatarHabilidades(Map<String, String> habilidades) {
+        if (habilidades.isEmpty()) {
+            return "  Nenhuma habilidade adquirida ainda.\n";
         }
-        Map<String, Integer> topHabilidades = habilidades.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .limit(5)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-        List<String> skillsFormatadas = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : topHabilidades.entrySet()) {
-            skillsFormatadas.add(String.format("%s (%d)", entry.getKey(), entry.getValue()));
+
+        StringBuilder sb = new StringBuilder();
+        // Itera sobre o mapa de habilidades
+        for (Map.Entry<String, String> entry : habilidades.entrySet()) {
+            String habilidade = entry.getKey();
+            String nivel = entry.getValue();
+            // Formata a saída para melhor alinhamento
+            sb.append(String.format("  - %-15s: %s\n", habilidade, nivel));
         }
-        return " ↳ " + String.join(", ", skillsFormatadas) + "\n";
+        return sb.toString();
     }
 
     private String formatarNomeCargo(String nomeEnum) {

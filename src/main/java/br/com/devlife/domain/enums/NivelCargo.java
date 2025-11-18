@@ -1,9 +1,8 @@
 package br.com.devlife.domain.enums;
 
 public enum NivelCargo {
-    ESTAGIARIO_PRECARIO,
-    ESTAGIARIO_MEDIO,
-    ESTAGIARIO_BOM,
+    ESTAGIARIO_INICIO,
+    ESTAGIARIO,
     JUNIOR,
     PLENO,
     SENIOR,

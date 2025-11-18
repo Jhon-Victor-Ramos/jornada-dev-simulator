@@ -8,7 +8,7 @@ import br.com.devlife.ui.TerminalUI;
 public class MotorDoJogo {
     public void iniciar() {
         TerminalUI terminal = new TerminalUI();
-        Jogador jogador = new Jogador("Dev Comum", AreaAtuacao.BACKEND, NivelCargo.ESTAGIARIO_PRECARIO);
+        Jogador jogador = new Jogador("Dev Comum", AreaAtuacao.BACKEND, NivelCargo.ESTAGIARIO_INICIO);
         String log = "Bem-vindo ao DevLife! Sua jornada como dev começa agora.";
         boolean jogoRodando = true;
 
