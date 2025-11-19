@@ -159,6 +159,17 @@ public class Jogador {
         return this.projetosConcluidos.contains(projeto);
     }
 
+    /**
+     * Define ou atualiza o nível de uma habilidade do jogador.
+     * Substitui o método de progressão incremental para um controle mais direto.
+     * @param habilidade O nome da habilidade.
+     * @param novoNivel O novo nível da habilidade.
+     */
+    public void setHabilidade(String habilidade, NivelHabilidade novoNivel) {
+        this.habilidades.put(habilidade, novoNivel);
+        System.out.println("Habilidade " + habilidade + " agora está no nível " + novoNivel.getNomeExibicao() + "!");
+    }
+
     // --- Getters e Setters ---
     public String getNome() { return nome; }
     public AreaAtuacao getAreaAtuacao() { return areaAtuacao; }

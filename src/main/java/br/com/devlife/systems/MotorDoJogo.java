@@ -54,13 +54,55 @@ public class MotorDoJogo {
                     break;
 
                 case 2: // Estudos (WIP)
-                    terminal.exibirMensagemComDelay("Funcionalidade de Cursos em desenvolvimento...", 1500);
-                    log = "Você decidiu focar em outras áreas por enquanto.";
+                    terminal.exibirMensagemComDelay("Verificando catálogo de cursos...", 1500);
+                    List<Curso> cursosDisponiveis = gerenciador.getCursosDisponiveis(jogador);
+                    int escolhaCurso = terminal.exibirSubMenuCursos(cursosDisponiveis);
+
+                    if (escolhaCurso > 0 && escolhaCurso <= cursosDisponiveis.size()) {
+                        Curso cursoEscolhido = cursosDisponiveis.get(escolhaCurso - 1);
+                        
+                        jogador.gastarDinheiro(cursoEscolhido.getCustoDinheiro());
+                        // Supondo que o jogador sempre tem energia para estudar
+                        jogador.setHabilidade(cursoEscolhido.getHabilidadeEnsinada(), cursoEscolhido.getNivelResultante());
+                        jogador.adicionarExperiencia(cursoEscolhido.getXpGanho());
+                        
+                        log = "Curso '" + cursoEscolhido.getNome() + "' concluído com sucesso!";
+                        avancarDias(cursoEscolhido.getDuracaoEmDias());
+                        
+                    } else {
+                        log = "Nenhum curso selecionado.";
+                    }
                     break;
 
+
                 case 3: // Vagas de Trabalho (WIP)
-                    terminal.exibirMensagemComDelay("Funcionalidade de Vagas em desenvolvimento...", 1500);
-                    log = "Você está satisfeito com seu cargo atual... por enquanto.";
+                    terminal.exibirMensagemComDelay("Buscando oportunidades no mercado...", 1500);
+                    List<Vaga> vagasDisponiveis = gerenciador.getVagasDisponiveis(jogador);
+                    int escolhaVaga = terminal.exibirSubMenuVagas(vagasDisponiveis);
+
+                    if (escolhaVaga > 0 && escolhaVaga <= vagasDisponiveis.size()) {
+                        Vaga vagaEscolhida = vagasDisponiveis.get(escolhaVaga - 1);
+                        
+                        if (gerenciador.jogadorTemRequisitosParaVaga(jogador, vagaEscolhida)) {
+                            log = "Parabéns! Você foi contratado como " + vagaEscolhida.getTituloVaga() + " na " + vagaEscolhida.getNomeEmpresa() + "!";
+                            terminal.exibirMensagemComDelay(log, 2500);
+                            
+                            jogador.setCargo(vagaEscolhida.getNivelPromocao());
+                            jogador.adicionarExperiencia(vagaEscolhida.getXpBonus());
+                            jogador.setNetworking(jogador.getNetworking() + vagaEscolhida.getNetBonus());
+                            // jogador.setSalario(vagaEscolhida.getSalario()); // Futura implementação
+                            
+                            if (jogador.getCargo() == NivelCargo.CEO) {
+                                terminal.exibirMensagemComDelay("VOCÊ ATINGIU O TOPO! ZEROU O JOGO!", 5000);
+                                jogoRodando = false;
+                            }
+                            
+                        } else {
+                            log = "Você não tem os requisitos para a vaga de " + vagaEscolhida.getTituloVaga() + ".";
+                        }
+                    } else {
+                        log = "Nenhuma vaga selecionada.";
+                    }
                     break;
 
                 case 4: // Eventos (WIP)

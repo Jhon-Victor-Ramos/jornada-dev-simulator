@@ -2,7 +2,9 @@ package br.com.devlife.ui;
 
 import br.com.devlife.core.Jogador;
 import br.com.devlife.domain.AcaoLazer;
+import br.com.devlife.domain.Curso;
 import br.com.devlife.domain.Projeto;
+import br.com.devlife.domain.Vaga;
 import br.com.devlife.domain.enums.AreaAtuacao;
 import br.com.devlife.domain.enums.NivelHabilidade;
 import br.com.devlife.domain.enums.TipoAtividade;
@@ -10,10 +12,11 @@ import br.com.devlife.domain.enums.TipoAtividade;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class TerminalUI {
 
-    // Constantes ANSI (sem alterações)
+    // Constantes ANSI para cores e estilos no terminal
     public static final String ANSI_RESET = "\033[0m";
     public static final String ANSI_RED = "\033[31m";
     public static final String ANSI_GREEN = "\033[32m";
@@ -64,7 +67,6 @@ public class TerminalUI {
         sb.append(String.format("%sNetworking:%s %d\n", ANSI_BOLD, ANSI_RESET, jogador.getNetworking()));
         sb.append("-----------------------------------------------------------\n");
 
-        // MUDANÇA: Novo menu vertical
         sb.append(ANSI_BOLD).append("========================[ MENU ]=====================").append(ANSI_RESET).append("\n");
         sb.append(" 1. Minhas Habilidades\n");
         sb.append(" 2. Estudos\n");
@@ -94,7 +96,6 @@ public class TerminalUI {
         limparTela();
         StringBuilder sb = new StringBuilder();
         sb.append(ANSI_BOLD).append("====================[ Projetos Disponíveis ]=====================").append(ANSI_RESET).append("\n\n");
-
         if (projetos.isEmpty()) {
             sb.append("  Nenhum projeto disponível para seu nível ou habilidades atuais.\n");
         } else {
@@ -102,9 +103,54 @@ public class TerminalUI {
                 Projeto p = projetos.get(i);
                 sb.append(String.format(" %d. %s\n", (i + 1), p.getNome()));
                 sb.append(String.format("    └─ %s\n", p.getDescricao()));
-                sb.append(ANSI_CYAN); // Cor para os detalhes
+                sb.append(ANSI_CYAN);
                 sb.append(String.format("       Duração: %d dias | XP: +%d | NET: +%d | Energia: %d | Sanidade: %d\n\n",
                         p.getDuracaoEmDias(), p.getXpGanho(), p.getNetworkingGanho(), -p.getEnergiaCusto(), -p.getSanidadeCusto()));
+                sb.append(ANSI_RESET);
+            }
+        }
+        sb.append("-----------------------------------------------------------\n");
+        sb.append(" 0. Voltar ao menu principal\n\n");
+        System.out.println(sb.toString());
+        return lerOpcao();
+    }
+
+    public int exibirSubMenuCursos(List<Curso> cursos) {
+        limparTela();
+        StringBuilder sb = new StringBuilder();
+        sb.append(ANSI_BOLD).append("======================[ Cursos Disponíveis ]======================").append(ANSI_RESET).append("\n\n");
+        if (cursos.isEmpty()) {
+            sb.append("  Nenhum novo curso disponível ou você não tem os pré-requisitos/dinheiro.\n");
+        } else {
+            for (int i = 0; i < cursos.size(); i++) {
+                Curso c = cursos.get(i);
+                sb.append(String.format(" %d. %s\n", (i + 1), c.getNome()));
+                sb.append(ANSI_CYAN);
+                sb.append(String.format("       Custo: R$ %.2f | Duração: %d dias | Habilidade: %s (%s) | XP: +%d\n\n",
+                        c.getCustoDinheiro(), c.getDuracaoEmDias(), c.getHabilidadeEnsinada(), c.getNivelResultante().getNomeExibicao(), c.getXpGanho()));
+                sb.append(ANSI_RESET);
+            }
+        }
+        sb.append("-----------------------------------------------------------\n");
+        sb.append(" 0. Voltar ao menu principal\n\n");
+        System.out.println(sb.toString());
+        return lerOpcao();
+    }
+
+    public int exibirSubMenuVagas(List<Vaga> vagas) {
+        limparTela();
+        StringBuilder sb = new StringBuilder();
+        sb.append(ANSI_BOLD).append("======================[ Vagas de Emprego ]======================").append(ANSI_RESET).append("\n\n");
+        if (vagas.isEmpty()) {
+            sb.append("  Nenhuma vaga disponível para o seu nível de cargo atual.\n");
+        } else {
+            for (int i = 0; i < vagas.size(); i++) {
+                Vaga v = vagas.get(i);
+                sb.append(String.format(" %d. %s na %s\n", (i + 1), v.getTituloVaga(), v.getNomeEmpresa()));
+                sb.append(ANSI_CYAN);
+                sb.append(String.format("       Salário: R$ %.2f | Validade: %d dias | XP Bônus: +%d | Net Bônus: +%d\n",
+                        v.getSalario(), v.getDiasValidade(), v.getXpBonus(), v.getNetBonus()));
+                sb.append("       Requisitos: ").append(formatarRequisitos(v.getRequisitos())).append("\n\n");
                 sb.append(ANSI_RESET);
             }
         }
@@ -118,7 +164,6 @@ public class TerminalUI {
         limparTela();
         StringBuilder sb = new StringBuilder();
         sb.append(ANSI_BOLD).append("====================[ Atividades Disponíveis ]=====================").append(ANSI_RESET).append("\n\n");
-
         if (acoes.isEmpty()) {
             sb.append("  Nenhuma atividade disponível no momento (verifique seu dinheiro).\n");
         } else {
@@ -169,9 +214,16 @@ public class TerminalUI {
         for (Map.Entry<String, NivelHabilidade> entry : habilidades.entrySet()) {
             String habilidade = entry.getKey();
             String nivel = entry.getValue().getNomeExibicao();
-            sb.append(String.format("  - %-15s: %s\n", habilidade, nivel));
+            sb.append(String.format("  - %-20s: %s\n", habilidade, nivel));
         }
         return sb.toString();
+    }
+    
+    private String formatarRequisitos(Map<String, NivelHabilidade> requisitos) {
+        if (requisitos.isEmpty()) return "Nenhum";
+        return requisitos.entrySet().stream()
+                .map(entry -> String.format("%s (%s)", entry.getKey(), entry.getValue().getNomeExibicao()))
+                .collect(Collectors.joining(", "));
     }
 
     private String formatarNomeCargo(String nomeEnum) {
@@ -181,19 +233,56 @@ public class TerminalUI {
         }
         return String.join(" ", partes);
     }
-    
-    // --- MÉTODOS DE ONBOARDING (sem alterações) ---
-    public void exibirTelaBoasVindas() { /* ... */ }
-    public String pedirNomeJogador() { /* ... */ }
-    public AreaAtuacao pedirAreaAtuacao() { /* ... */ }
 
-    // --- NOVOS MÉTODOS DA INTERFACE ---
+    public void exibirTelaBoasVindas() {
+        limparTela();
+        System.out.println(ANSI_BOLD + ANSI_GREEN);
+        System.out.println("=====================================================");
+        System.out.println("                Bem-vindo ao DevLife!                ");
+        System.out.println("=====================================================");
+        System.out.println(ANSI_RESET);
+        System.out.println("Prepare-se para iniciar sua jornada na carreira de TI,");
+        System.out.println("desde os primeiros passos como estagiário até o topo!");
+        System.out.println("\nVamos começar criando seu personagem.");
+        esperarEnterParaContinuar();
+    }
+
+    public String pedirNomeJogador() {
+        limparTela();
+        System.out.println(ANSI_BOLD + "--- Criação de Personagem ---" + ANSI_RESET);
+        System.out.print("Digite o nome do seu personagem: ");
+        String nome = scanner.nextLine();
+        while (nome.trim().isEmpty()) {
+            System.out.print("O nome não pode ser vazio. Digite novamente: ");
+            nome = scanner.nextLine();
+        }
+        return nome;
+    }
+
+    public AreaAtuacao pedirAreaAtuacao() {
+        limparTela();
+        System.out.println(ANSI_BOLD + "--- Criação de Personagem ---" + ANSI_RESET);
+        System.out.println("Escolha sua área de atuação inicial:");
+        System.out.println("  1. Front-end");
+        System.out.println("  2. Back-end");
+
+        while (true) {
+            int escolha = lerOpcao();
+            switch (escolha) {
+                case 1:
+                    return AreaAtuacao.FRONTEND;
+                case 2:
+                    return AreaAtuacao.BACKEND;
+                default:
+                    System.out.print("Opção inválida. Por favor, escolha 1 ou 2: ");
+            }
+        }
+    }
 
     public void exibirMenuHabilidades(Jogador jogador) {
         limparTela();
         StringBuilder sb = new StringBuilder();
         sb.append(ANSI_BOLD).append("====================[ Minhas Habilidades ]=====================").append(ANSI_RESET).append("\n\n");
-        // TODO: Separar em Hard Skills e Soft Skills no futuro
         sb.append(formatarHabilidades(jogador.getHabilidades()));
         sb.append("\n-----------------------------------------------------------\n");
         System.out.println(sb.toString());
@@ -215,7 +304,7 @@ public class TerminalUI {
             switch (escolha) {
                 case 1: return TipoAtividade.SAUDE;
                 case 2: return TipoAtividade.SANIDADE;
-                case 0: return null; // Representa a intenção de voltar
+                case 0: return null;
                 default:
                     System.out.print("Opção inválida. Por favor, escolha 0, 1 ou 2: ");
             }
