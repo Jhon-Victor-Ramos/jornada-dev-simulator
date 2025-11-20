@@ -1,5 +1,6 @@
 package br.com.devlife.domain;
 
+import br.com.devlife.domain.enums.NivelCargo;
 import br.com.devlife.domain.enums.NivelHabilidade;
 import java.util.Collections;
 import java.util.Map;
@@ -12,15 +13,17 @@ public final class Curso {
     private final String habilidadeEnsinada;
     private final NivelHabilidade nivelResultante;
     private final int xpGanho;
-    private final Map<String, NivelHabilidade> requisitos; // NOVO ATRIBUTO
+    private final Map<String, NivelHabilidade> requisitos;
+    private final NivelCargo nivelMinimo; // NOVO ATRIBUTO
 
-    public Curso(String nome, double custoDinheiro, int duracaoEmDias, String habilidadeEnsinada, NivelHabilidade nivelResultante, int xpGanho, Map<String, NivelHabilidade> requisitos) {
+    public Curso(String nome, double custoDinheiro, int duracaoEmDias, String habilidadeEnsinada, NivelHabilidade nivelResultante, int xpGanho, NivelCargo nivelMinimo, Map<String, NivelHabilidade> requisitos) {
         this.nome = nome;
         this.custoDinheiro = custoDinheiro;
         this.duracaoEmDias = duracaoEmDias;
         this.habilidadeEnsinada = habilidadeEnsinada;
         this.nivelResultante = nivelResultante;
         this.xpGanho = xpGanho;
+        this.nivelMinimo = nivelMinimo;
         this.requisitos = (requisitos != null) ? Collections.unmodifiableMap(requisitos) : Collections.emptyMap();
     }
 
@@ -31,7 +34,8 @@ public final class Curso {
     public String getHabilidadeEnsinada() { return habilidadeEnsinada; }
     public NivelHabilidade getNivelResultante() { return nivelResultante; }
     public int getXpGanho() { return xpGanho; }
-    public Map<String, NivelHabilidade> getRequisitos() { return requisitos; } // NOVO GETTER
+    public Map<String, NivelHabilidade> getRequisitos() { return requisitos; }
+    public NivelCargo getNivelMinimo() { return nivelMinimo; } // NOVO GETTER
 
     @Override
     public boolean equals(Object o) {

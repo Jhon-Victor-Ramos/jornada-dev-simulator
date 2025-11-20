@@ -53,27 +53,31 @@ public class MotorDoJogo {
                     log = "Você analisou seu progresso e suas habilidades.";
                     break;
 
-                case 2: // Estudos (WIP)
+                case 2: // Estudos
                     terminal.exibirMensagemComDelay("Verificando catálogo de cursos...", 1500);
                     List<Curso> cursosDisponiveis = gerenciador.getCursosDisponiveis(jogador);
-                    int escolhaCurso = terminal.exibirSubMenuCursos(cursosDisponiveis);
+                    // A UI agora precisa da lista de soft skills para separar a exibição
+                    int escolhaCurso = terminal.exibirSubMenuCursos(cursosDisponiveis, gerenciador.getSoftSkills());
 
                     if (escolhaCurso > 0 && escolhaCurso <= cursosDisponiveis.size()) {
                         Curso cursoEscolhido = cursosDisponiveis.get(escolhaCurso - 1);
                         
-                        jogador.gastarDinheiro(cursoEscolhido.getCustoDinheiro());
-                        // Supondo que o jogador sempre tem energia para estudar
-                        jogador.setHabilidade(cursoEscolhido.getHabilidadeEnsinada(), cursoEscolhido.getNivelResultante());
-                        jogador.adicionarExperiencia(cursoEscolhido.getXpGanho());
-                        
-                        log = "Curso '" + cursoEscolhido.getNome() + "' concluído com sucesso!";
-                        avancarDias(cursoEscolhido.getDuracaoEmDias());
-                        
+                        // CORREÇÃO DO BUG: Verifica o dinheiro ANTES de fazer o curso
+                        if (jogador.temDinheiroSuficiente(cursoEscolhido.getCustoDinheiro())) {
+                            jogador.gastarDinheiro(cursoEscolhido.getCustoDinheiro());
+                            jogador.setHabilidade(cursoEscolhido.getHabilidadeEnsinada(), cursoEscolhido.getNivelResultante());
+                            jogador.adicionarExperiencia(cursoEscolhido.getXpGanho());
+                            jogador.completarCurso(cursoEscolhido); // Marca o curso como concluído
+                            
+                            log = "Curso '" + cursoEscolhido.getNome() + "' concluído com sucesso!";
+                            avancarDias(cursoEscolhido.getDuracaoEmDias());
+                        } else {
+                            log = "Dinheiro insuficiente para pagar o curso '" + cursoEscolhido.getNome() + "'.";
+                        }
                     } else {
                         log = "Nenhum curso selecionado.";
                     }
                     break;
-
 
                 case 3: // Vagas de Trabalho (WIP)
                     terminal.exibirMensagemComDelay("Buscando oportunidades no mercado...", 1500);

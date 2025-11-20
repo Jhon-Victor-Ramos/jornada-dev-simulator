@@ -115,26 +115,43 @@ public class TerminalUI {
         return lerOpcao();
     }
 
-    public int exibirSubMenuCursos(List<Curso> cursos) {
+    public int exibirSubMenuCursos(List<Curso> cursos, Set<String> softSkills) {
         limparTela();
         StringBuilder sb = new StringBuilder();
         sb.append(ANSI_BOLD).append("======================[ Cursos Disponíveis ]======================").append(ANSI_RESET).append("\n\n");
+        
+        List<Curso> cursosHardSkill = cursos.stream().filter(c -> !softSkills.contains(c.getHabilidadeEnsinada())).toList();
+        List<Curso> cursosSoftSkill = cursos.stream().filter(c -> softSkills.contains(c.getHabilidadeEnsinada())).toList();
+
         if (cursos.isEmpty()) {
-            sb.append("  Nenhum novo curso disponível ou você não tem os pré-requisitos/dinheiro.\n");
+            sb.append("  Nenhum curso disponível. Você pode não ter o dinheiro, os pré-requisitos ou já concluiu os cursos do seu nível.\n");
         } else {
-            for (int i = 0; i < cursos.size(); i++) {
-                Curso c = cursos.get(i);
-                sb.append(String.format(" %d. %s\n", (i + 1), c.getNome()));
-                sb.append(ANSI_CYAN);
-                sb.append(String.format("       Custo: R$ %.2f | Duração: %d dias | Habilidade: %s (%s) | XP: +%d\n\n",
-                        c.getCustoDinheiro(), c.getDuracaoEmDias(), c.getHabilidadeEnsinada(), c.getNivelResultante().getNomeExibicao(), c.getXpGanho()));
-                sb.append(ANSI_RESET);
+            int index = 1;
+            if (!cursosHardSkill.isEmpty()) {
+                sb.append(ANSI_BOLD).append("--- Cursos de Hard Skill ---\n\n").append(ANSI_RESET);
+                for (Curso c : cursosHardSkill) {
+                    sb.append(formatarCurso(index++, c));
+                }
+            }
+            if (!cursosSoftSkill.isEmpty()) {
+                sb.append(ANSI_BOLD).append("\n--- Cursos de Soft Skill & Idiomas ---\n\n").append(ANSI_RESET);
+                for (Curso c : cursosSoftSkill) {
+                    sb.append(formatarCurso(index++, c));
+                }
             }
         }
+
         sb.append("-----------------------------------------------------------\n");
         sb.append(" 0. Voltar ao menu principal\n\n");
         System.out.println(sb.toString());
         return lerOpcao();
+    }
+    
+    // NOVO MÉTODO PRIVADO para evitar repetição de código
+    private String formatarCurso(int indice, Curso c) {
+        return String.format(" %d. %s\n%s       Custo: R$ %.2f | Duração: %d dias | Habilidade: %s (%s) | XP: +%d\n\n%s",
+                indice, c.getNome(), ANSI_CYAN, c.getCustoDinheiro(), c.getDuracaoEmDias(),
+                c.getHabilidadeEnsinada(), c.getNivelResultante().getNomeExibicao(), c.getXpGanho(), ANSI_RESET);
     }
 
     public int exibirSubMenuVagas(List<Vaga> vagas) {

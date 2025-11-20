@@ -23,6 +23,7 @@ public class Jogador {
     private NivelCargo cargo;
     private final Map<String, NivelHabilidade> habilidades;
     private final List<Projeto> projetosConcluidos; // NOVO ATRIBUTO
+    private final List<Curso> cursosConcluidos; // NOVO ATRIBUTO
 
     public Jogador(String nome, AreaAtuacao areaAtuacao, NivelCargo cargoInicial) {
         this.nome = nome;
@@ -36,6 +37,7 @@ public class Jogador {
         this.networking = 10;
         this.habilidades = new HashMap<>();
         this.projetosConcluidos = new ArrayList<>(); // INICIALIZAÇÃO DA NOVA LISTA
+        this.cursosConcluidos = new ArrayList<>(); // INICIALIZAÇÃO DA NOVA LISTA
         inicializarHabilidadesPorArea();
     }
 
@@ -168,6 +170,17 @@ public class Jogador {
     public void setHabilidade(String habilidade, NivelHabilidade novoNivel) {
         this.habilidades.put(habilidade, novoNivel);
         System.out.println("Habilidade " + habilidade + " agora está no nível " + novoNivel.getNomeExibicao() + "!");
+    }
+
+    // NOVOS MÉTODOS para rastrear cursos
+    public void completarCurso(Curso curso) {
+        if (!this.cursosConcluidos.contains(curso)) {
+            this.cursosConcluidos.add(curso);
+        }
+    }
+
+    public boolean jaConcluiuCurso(Curso curso) {
+        return this.cursosConcluidos.contains(curso);
     }
 
     // --- Getters e Setters ---
