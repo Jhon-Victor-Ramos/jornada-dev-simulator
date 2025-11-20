@@ -3,9 +3,11 @@ package br.com.devlife.systems;
 import br.com.devlife.core.Jogador;
 import br.com.devlife.domain.AcaoLazer;
 import br.com.devlife.domain.Projeto;
+import br.com.devlife.domain.Vaga;
 import br.com.devlife.domain.enums.AreaAtuacao;
 import br.com.devlife.domain.enums.NivelCargo;
 import br.com.devlife.domain.enums.TipoAtividade;
+import br.com.devlife.domain.Curso;
 import br.com.devlife.ui.TerminalUI;
 import java.util.List;
 
@@ -14,6 +16,7 @@ public class MotorDoJogo {
     private Jogador jogador;
     private final TerminalUI terminal;
     private final GerenciadorDeAcoes gerenciador;
+
 
     public MotorDoJogo() {
         this.terminal = new TerminalUI();
@@ -60,9 +63,14 @@ public class MotorDoJogo {
 
                     if (escolhaCurso > 0 && escolhaCurso <= cursosDisponiveis.size()) {
                         Curso cursoEscolhido = cursosDisponiveis.get(escolhaCurso - 1);
+
+                        int custoTotalEnergia = cursoEscolhido.getEnergiaCustoPorDia() * cursoEscolhido.getDuracaoEmDias();
+                        int custoTotalSanidade = cursoEscolhido.getSanidadeCustoPorDia() * cursoEscolhido.getDuracaoEmDias();
                         
                         jogador.gastarDinheiro(cursoEscolhido.getCustoDinheiro());
                         // Supondo que o jogador sempre tem energia para estudar
+                        jogador.alterarRecursoVital("energia", -custoTotalEnergia);
+                        jogador.alterarRecursoVital("sanidade", -custoTotalSanidade);
                         jogador.setHabilidade(cursoEscolhido.getHabilidadeEnsinada(), cursoEscolhido.getNivelResultante());
                         jogador.adicionarExperiencia(cursoEscolhido.getXpGanho());
                         
@@ -77,7 +85,7 @@ public class MotorDoJogo {
 
                 case 3: // Vagas de Trabalho (WIP)
                     terminal.exibirMensagemComDelay("Buscando oportunidades no mercado...", 1500);
-                    List<Vaga> vagasDisponiveis = gerenciador.getVagasDisponiveis(jogador);
+                    List<Vaga> vagasDisponiveis = gerenciador.getVagasDisponiveis(jogador, this.diaAtual);
                     int escolhaVaga = terminal.exibirSubMenuVagas(vagasDisponiveis);
 
                     if (escolhaVaga > 0 && escolhaVaga <= vagasDisponiveis.size()) {
@@ -88,9 +96,10 @@ public class MotorDoJogo {
                             terminal.exibirMensagemComDelay(log, 2500);
                             
                             jogador.setCargo(vagaEscolhida.getNivelPromocao());
+                            jogador.setVagaAtual(vagaEscolhida);
                             jogador.adicionarExperiencia(vagaEscolhida.getXpBonus());
                             jogador.setNetworking(jogador.getNetworking() + vagaEscolhida.getNetBonus());
-                            // jogador.setSalario(vagaEscolhida.getSalario()); // Futura implementação
+                            jogador.setSalario(vagaEscolhida.getSalario());
                             
                             if (jogador.getCargo() == NivelCargo.CEO) {
                                 terminal.exibirMensagemComDelay("VOCÊ ATINGIU O TOPO! ZEROU O JOGO!", 5000);
@@ -181,12 +190,34 @@ public class MotorDoJogo {
      * @param dias O número de dias a avançar.
      */
     private void avancarDias(int dias) {
+        String logPagamento = "";
         for (int i = 0; i < dias; i++) {
             this.diaAtual++;
-            // MUDANÇA: A energia é restaurada para 100 no início de cada novo dia.
-            jogador.setEnergia(100);
+            // MUDANÇA: A energia aumenta em 20 pontos no início de cada novo dia.
+            jogador.alterarRecursoVital("energia", 20);
 
-            // TODO: Adicionar lógica de desgaste diário de saúde/sanidade com base no cargo.
+            if (this.diaAtual % 30 == 0 && jogador.getSalario() > 0) {
+                jogador.adicionarDinheiro(jogador.getSalario());
+                logPagamento = String.format(" | VOCÊ RECEBEU SEU SALÁRIO DE R$ %.2f!", jogador.getSalario());
+            }
+
+            Vaga vagaAtual = jogador.getVagaAtual();
+            if (vagaAtual != null) {
+                // Pega os valores de penalidade da vaga
+                int penalidadeSanidade = vagaAtual.getPenalidadeDiariaSanidade();
+                int penalidadeEnergia = vagaAtual.getPenalidadeDiariaEnergia();
+
+                if (penalidadeSanidade > 0) {
+                    jogador.alterarRecursoVital("sanidade", -penalidadeSanidade);
+                }
+                if (penalidadeEnergia > 0) {
+                    jogador.alterarRecursoVital("energia", -penalidadeEnergia);
+                }
+            }
+            if (!logPagamento.isEmpty()) {
+                terminal.exibirDashboard(jogador, logPagamento.substring(3), diaAtual);
+                terminal.esperarEnterParaContinuar();
+            }
         }
     }
 }

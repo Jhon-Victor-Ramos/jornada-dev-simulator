@@ -4,6 +4,7 @@ import br.com.devlife.domain.Projeto;
 import br.com.devlife.domain.enums.AreaAtuacao;
 import br.com.devlife.domain.enums.NivelCargo;
 import br.com.devlife.domain.enums.NivelHabilidade;
+import br.com.devlife.domain.Vaga;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,12 +18,14 @@ public class Jogador {
     private int saude;
     private int sanidade;
     private int energia;
+    private double salario;
     private double dinheiro;
     private int experiencia;
     private int networking;
     private NivelCargo cargo;
     private final Map<String, NivelHabilidade> habilidades;
-    private final List<Projeto> projetosConcluidos; // NOVO ATRIBUTO
+    private final List<Projeto> projetosConcluidos;
+    private Vaga vagaAtual;
 
     public Jogador(String nome, AreaAtuacao areaAtuacao, NivelCargo cargoInicial) {
         this.nome = nome;
@@ -32,10 +35,12 @@ public class Jogador {
         this.sanidade = 100;
         this.energia = 100;
         this.dinheiro = 500.00;
+        this.salario = 0.00;
         this.experiencia = 0;
         this.networking = 10;
         this.habilidades = new HashMap<>();
-        this.projetosConcluidos = new ArrayList<>(); // INICIALIZAÇÃO DA NOVA LISTA
+        this.projetosConcluidos = new ArrayList<>();
+        this.vagaAtual = null;
         inicializarHabilidadesPorArea();
     }
 
@@ -74,7 +79,7 @@ public class Jogador {
                 valorAtual = this.saude;
                 this.saude = Math.max(0, Math.min(100, valorAtual + valor));
                 break;
-            case "sanidade":
+                case "sanidade":
                 valorAtual = this.sanidade;
                 this.sanidade = Math.max(0, Math.min(100, valorAtual + valor));
                 break;
@@ -177,6 +182,8 @@ public class Jogador {
     public int getSanidade() { return sanidade; }
     public int getEnergia() { return energia; }
     public double getDinheiro() { return dinheiro; }
+    public double getSalario() { return salario; }
+    public void setSalario(double salario) { this.salario = salario; }
     public int getExperiencia() { return experiencia; }
     public int getNetworking() { return networking; }
     public NivelCargo getCargo() { return cargo; }
@@ -184,6 +191,8 @@ public class Jogador {
     public void setCargo(NivelCargo novoCargo) { this.cargo = novoCargo; }
     public void setNetworking(int networking) { this.networking = networking; }
     public void setEnergia(int energia) { this.energia = Math.max(0, Math.min(100, energia)); }
+    public Vaga getVagaAtual() { return vagaAtual; }
+    public void setVagaAtual(Vaga vagaAtual) { this.vagaAtual = vagaAtual; }
 
     @Override
     public String toString() {

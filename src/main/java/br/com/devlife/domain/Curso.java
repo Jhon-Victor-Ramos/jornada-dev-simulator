@@ -12,15 +12,19 @@ public final class Curso {
     private final String habilidadeEnsinada;
     private final NivelHabilidade nivelResultante;
     private final int xpGanho;
-    private final Map<String, NivelHabilidade> requisitos; // NOVO ATRIBUTO
+    private final Map<String, NivelHabilidade> requisitos;
+    private final int energiaCustoPorDia;
+    private final int sanidadeCustoPorDia;
 
-    public Curso(String nome, double custoDinheiro, int duracaoEmDias, String habilidadeEnsinada, NivelHabilidade nivelResultante, int xpGanho, Map<String, NivelHabilidade> requisitos) {
+    public Curso(String nome, double custoDinheiro, int duracaoEmDias, String habilidadeEnsinada, NivelHabilidade nivelResultante, int xpGanho, int energiaCustoPorDia, int sanidadeCustoPorDia, Map<String, NivelHabilidade> requisitos) {
         this.nome = nome;
         this.custoDinheiro = custoDinheiro;
         this.duracaoEmDias = duracaoEmDias;
         this.habilidadeEnsinada = habilidadeEnsinada;
         this.nivelResultante = nivelResultante;
         this.xpGanho = xpGanho;
+        this.energiaCustoPorDia = energiaCustoPorDia;
+        this.sanidadeCustoPorDia = sanidadeCustoPorDia;
         this.requisitos = (requisitos != null) ? Collections.unmodifiableMap(requisitos) : Collections.emptyMap();
     }
 
@@ -31,6 +35,8 @@ public final class Curso {
     public String getHabilidadeEnsinada() { return habilidadeEnsinada; }
     public NivelHabilidade getNivelResultante() { return nivelResultante; }
     public int getXpGanho() { return xpGanho; }
+    public int getEnergiaCustoPorDia() { return energiaCustoPorDia; }
+    public int getSanidadeCustoPorDia() { return sanidadeCustoPorDia; }
     public Map<String, NivelHabilidade> getRequisitos() { return requisitos; } // NOVO GETTER
 
     @Override
