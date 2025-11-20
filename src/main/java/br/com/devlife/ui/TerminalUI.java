@@ -65,7 +65,7 @@ public class TerminalUI {
         sb.append(String.format("%sXp:%s %-26d | %sCargo:%s %s\n",
                 ANSI_BOLD, ANSI_RESET, jogador.getExperiencia(), ANSI_BOLD, ANSI_RESET, formatarNomeCargo(jogador.getCargo().name())));
 
-        sb.append(String.format("%sNetworking:%s %-7d | %sSalário:%s R$ %-15.2f\n",
+        sb.append(String.format("%sNetworking:%s %-7d |       %sSalário:%s R$ %-15.2f\n",
                 ANSI_BOLD, ANSI_RESET, jogador.getNetworking(), ANSI_BOLD, ANSI_RESET, jogador.getSalario()));
 
         sb.append("-----------------------------------------------------------\n");
