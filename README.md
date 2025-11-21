@@ -33,7 +33,7 @@ Este projeto foi desenvolvido em **Java 17**, com um forte foco em boas prática
 
 ---
 
-##  Gameplay & Features
+## ✨ Gameplay & Features
 
 -  **Gerenciamento Estratégico de Recursos:** Cada ação consome recursos. Fique de olho nos seus níveis de **Energia**, **Saúde** e **Sanidade**. Níveis baixos podem levar a penalidades e esgotamento!
 
