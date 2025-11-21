@@ -73,6 +73,12 @@ Para garantir consistência e agilidade no desenvolvimento, é necessário que a
 
 ---
 
+## Diagrama UML
+
+![Diagrama UML demonstrando o funcionamento do projeto](https://github.com/Jhon-Victor-Ramos/jornada-dev-simulator/blob/versao-final-corrigida/UML%20Diagram.png)
+
+---
+
 ## Equipe
 
 *   Camilla Torquato - [GitHub](https://github.com/camilatorquato) | [LinkedIn](https://www.linkedin.com/in/camila-torquato-5b5356354?utm_source=share_via&utm_content=profile&utm_medium=member_android)
@@ -87,4 +93,4 @@ Para garantir consistência e agilidade no desenvolvimento, é necessário que a
 *   Maria Luiza Monteiro - [GitHub](link) | [LinkedIn](link) | [Instagram](link) | [Lattes](link) // Ainda precisa ajustar os links
 
 
-*   Rielly Luiza Duarte da Silva - [GitHub](https://github.com/rluizaduarte) | [LinkedIn](https://www.linkedin.com/in/rielly-luiza-370282332?utm_source=share_via&utm_content=profile&utm_medium=member_ios) | [Instagram](https://www.instagram.com/riellylduarte?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==) | [Lattes](link)
+*   Rielly Luiza Duarte da Silva - [GitHub](https://github.com/rluizaduarte) | [LinkedIn](https://www.linkedin.com/in/rielly-luiza-370282332?utm_source=share_via&utm_content=profile&utm_medium=member_ios) | [Instagram](https://www.instagram.com/riellylduarte?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==) | [Lattes](http://lattes.cnpq.br/0089072611329730)
