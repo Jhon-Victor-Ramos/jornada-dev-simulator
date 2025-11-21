@@ -113,7 +113,7 @@ O projeto foi estruturado seguindo princípios de **Separação de Responsabilid
 
 O diagrama abaixo ilustra a relação entre as principais classes do sistema, demonstrando a estrutura e o fluxo de interações.
 
-![Diagrama UML demonstrando o funcionamento do projeto](https://raw.githubusercontent.com/Jhon-Victor-Ramos/jornada-dev-simulator/versao-final-corrigida/UML%20Diagram.png)
+![Diagrama UML demonstrando o funcionamento do projeto](https://github.com/Jhon-Victor-Ramos/jornada-dev-simulator/blob/main/UML%20Diagram%20-%20Atualizado.png)
 
 ---
 
