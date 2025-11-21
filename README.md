@@ -33,23 +33,23 @@ Este projeto foi desenvolvido em **Java 17**, com um forte foco em boas prática
 
 ---
 
-## ✨ Gameplay & Features
+##  Gameplay & Features
 
--   🧠 **Gerenciamento Estratégico de Recursos:** Cada ação consome recursos. Fique de olho nos seus níveis de **Energia**, **Saúde** e **Sanidade**. Níveis baixos podem levar a penalidades e esgotamento!
+-  **Gerenciamento Estratégico de Recursos:** Cada ação consome recursos. Fique de olho nos seus níveis de **Energia**, **Saúde** e **Sanidade**. Níveis baixos podem levar a penalidades e esgotamento!
 
--   🚀 **Progressão de Carreira Realista:** Avance por níveis de cargo bem definidos: `Estagiário Início` -> `Estagiário` -> `Júnior` -> `Pleno` -> `Sênior` -> `CEO`. Cada cargo desbloqueia novas oportunidades e desafios.
+- **Progressão de Carreira Realista:** Avance por níveis de cargo bem definidos: `Estagiário Início` -> `Estagiário` -> `Júnior` -> `Pleno` -> `Sênior` -> `CEO`. Cada cargo desbloqueia novas oportunidades e desafios.
 
--   📚 **Desenvolvimento de Habilidades:** Invista em um catálogo extenso de cursos para aprender **Hard Skills** (como `Java`, `SQL`, `AWS`, `Kubernetes`) e **Soft Skills** (como `Liderança`, `Comunicação`, `Negociação`).
+- **Desenvolvimento de Habilidades:** Invista em um catálogo extenso de cursos para aprender **Hard Skills** (como `Java`, `SQL`, `AWS`, `Kubernetes`) e **Soft Skills** (como `Liderança`, `Comunicação`, `Negociação`).
 
--   💼 **Oportunidades Dinâmicas:** O mercado de trabalho é vivo! Novas vagas, projetos e cursos se tornam disponíveis de acordo com seu nível de cargo e habilidades atuais. Cumpra os pré-requisitos para ter acesso às melhores oportunidades.
+- **Oportunidades Dinâmicas:** O mercado de trabalho é vivo! Novas vagas, projetos e cursos se tornam disponíveis de acordo com seu nível de cargo e habilidades atuais. Cumpra os pré-requisitos para ter acesso às melhores oportunidades.
 
--   💰 **Gestão Financeira:** Ganhe dinheiro com projetos e salários mensais. Use seus recursos com sabedoria para investir em cursos, participar de eventos e cuidar do seu bem-estar.
+-  **Gestão Financeira:** Ganhe dinheiro com projetos e salários mensais. Use seus recursos com sabedoria para investir em cursos, participar de eventos e cuidar do seu bem-estar.
 
--   🌐 **Networking e Eventos:** Participe de eventos de tecnologia para aumentar seu networking, ganhar experiência e até mesmo desbloquear bônus especiais, como descontos em cursos!
+- **Networking e Eventos:** Participe de eventos de tecnologia para aumentar seu networking, ganhar experiência e até mesmo desbloquear bônus especiais, como descontos em cursos!
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 -   **Linguagem Principal:** **Java 17 (LTS)**
 -   **Gerenciador de Dependências e Build:** **Maven**
@@ -101,11 +101,11 @@ java -jar target/devlife-1.0-SNAPSHOT.jar
 
 O projeto foi estruturado seguindo princípios de **Separação de Responsabilidades**, assemelhando-se a uma arquitetura MVC (Model-View-Controller) para aplicações de terminal.
 
--   📁 **`src/main/java/br/com/devlife`**
-    -   🔵 **`core` (Model):** Contém a classe `Jogador`, que representa o estado central e todos os atributos do personagem.
-    -   📦 **`domain` (Model):** Define as entidades imutáveis do jogo, como `Curso`, `Projeto`, `Vaga`, e os `enums` que garantem a consistência dos dados.
-    -   🧠 **`systems` (Controller):** Contém a lógica principal do jogo. `MotorDoJogo` gerencia o loop de gameplay e o fluxo de turnos, enquanto `GerenciadorDeAcoes` atua como um "banco de dados" de conteúdo, filtrando as ações disponíveis para o jogador.
-    -   🖥️ **`ui` (View):** A classe `TerminalUI` é a única responsável por toda a interação com o usuário, desde exibir o dashboard e menus até capturar as entradas, garantindo que a lógica do jogo e a apresentação sejam desacopladas.
+-  **`src/main/java/br/com/devlife`**
+    - **`core` (Model):** Contém a classe `Jogador`, que representa o estado central e todos os atributos do personagem.
+    -  **`domain` (Model):** Define as entidades imutáveis do jogo, como `Curso`, `Projeto`, `Vaga`, e os `enums` que garantem a consistência dos dados.
+    -  **`systems` (Controller):** Contém a lógica principal do jogo. `MotorDoJogo` gerencia o loop de gameplay e o fluxo de turnos, enquanto `GerenciadorDeAcoes` atua como um "banco de dados" de conteúdo, filtrando as ações disponíveis para o jogador.
+    -  **`ui` (View):** A classe `TerminalUI` é a única responsável por toda a interação com o usuário, desde exibir o dashboard e menus até capturar as entradas, garantindo que a lógica do jogo e a apresentação sejam desacopladas.
 
 ---
 
