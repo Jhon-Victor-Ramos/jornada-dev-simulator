@@ -3,6 +3,7 @@ package br.com.devlife.systems;
 import br.com.devlife.core.Jogador;
 import br.com.devlife.domain.AcaoLazer;
 import br.com.devlife.domain.Curso;
+import br.com.devlife.domain.Evento;
 import br.com.devlife.domain.Projeto;
 import br.com.devlife.domain.enums.NivelCargo;
 import br.com.devlife.domain.enums.NivelHabilidade;
@@ -18,9 +19,10 @@ public final class GerenciadorDeAcoes {
     private final List<Curso> todosOsCursos;
     private final List<AcaoLazer> todasAsAcoesLazer;
     private final List<Vaga> todasAsVagas;
+    private final List<Evento> todosOsEventos;
 
     public GerenciadorDeAcoes() {
-        // CONTEÚDO EXPANDIDO: 3 projetos de front e 3 projetos de back para cada nível
+        // ... (A inicialização da lista todosOsProjetos permanece a mesma)
         this.todosOsProjetos = List.of(
                 // --- ESTAGIARIO_INICIO ---
                 // Front-end
@@ -73,6 +75,7 @@ public final class GerenciadorDeAcoes {
                 new Projeto("Estruturar Processo de Code Review", "Definir e implementar a cultura de revisão de código.", 5000, 0.00, 65, 10, 800, 15, NivelCargo.SENIOR, Map.of())
         );
 
+        // ... (A inicialização da lista todosOsCursos permanece a mesma)
         this.todosOsCursos = List.of(
                 // Cursos de Habilidades Básicas (Estágio)
                 new Curso("Fundamentos de SO", 100.00, 3, "SO", NivelHabilidade.INICIANTE, 20, 6, 3, Map.of()),
@@ -134,7 +137,7 @@ public final class GerenciadorDeAcoes {
                 new Curso("Visão de Negócio para Devs", 420.00, 6, "Visão de Negócio", NivelHabilidade.INICIANTE, 90, 12, 6, Map.of())
         );
 
-        // MUDANÇA: CATÁLOGO DE VAGAS COMPLETO E COM VALIDADE RECALCULADA
+        // ... (A inicialização da lista todasAsVagas permanece a mesma)
         this.todasAsVagas = List.of(
                 // --- Vagas para ESTÁGIO (requer ESTAGIARIO_INICIO) ---
                 // Cursos: SO(3d) + Pacote Office(2d) = 5d. Validade: 5 + 5 = 10 dias
@@ -169,22 +172,36 @@ public final class GerenciadorDeAcoes {
                 new Vaga("Gogle", "Cientista de Dados Sênior", 20000.00, 10000, 400, 15, 15, Map.of("Kubeflow", NivelHabilidade.INICIANTE, "Spark", NivelHabilidade.INICIANTE, "Mandarim", NivelHabilidade.AVANCADO, "Ética no Trabalho", NivelHabilidade.INICIANTE, "Negociação", NivelHabilidade.INICIANTE, "Visão de Negócio", NivelHabilidade.INICIANTE), 130, NivelCargo.PLENO, NivelCargo.SENIOR)
         );
 
+        // ... (A inicialização da lista todasAsAcoesLazer permanece a mesma)
         this.todasAsAcoesLazer = List.of(
-            // --- Atividades de SAÚDE ---
-            new AcaoLazer("Caminhada Leve", "Custo: R$ 0 | Saúde: +3", 0.00, -5, 3, 1, 0, TipoAtividade.SAUDE),
-            new AcaoLazer("Correr no Parque", "Custo: R$ 5 | Saúde: +10", 5.00, -15, 10, 0, 0, TipoAtividade.SAUDE),
-            new AcaoLazer("Comprar Vegetais", "Custo: R$ 50 | Saúde: +15", 50.00, -5, 15, 0, 0, TipoAtividade.SAUDE),
-            new AcaoLazer("Tomar Vitaminas", "Custo: R$ 75 | Saúde: +25", 75.00, 0, 25, 0, 0, TipoAtividade.SAUDE),
-            new AcaoLazer("Fazer um Check-up", "Custo: R$ 150 | Saúde: +30 | Duração: 1 dia", 150.00, -10, 30, 0, 1, TipoAtividade.SAUDE),
-            new AcaoLazer("Consulta no Hospital", "Custo: R$ 500 | Saúde: +50 | Duração: 1 dia", 500.00, -20, 50, 0, 1, TipoAtividade.SAUDE),
+                // --- Atividades de SAÚDE ---
+                new AcaoLazer("Caminhada Leve", "Custo: R$ 0 | Saúde: +3", 0.00, -5, 3, 1, 0, TipoAtividade.SAUDE),
+                new AcaoLazer("Correr no Parque", "Custo: R$ 5 | Saúde: +10", 5.00, -15, 10, 0, 0, TipoAtividade.SAUDE),
+                new AcaoLazer("Comprar Vegetais", "Custo: R$ 50 | Saúde: +15", 50.00, -5, 15, 0, 0, TipoAtividade.SAUDE),
+                new AcaoLazer("Tomar Vitaminas", "Custo: R$ 75 | Saúde: +25", 75.00, 0, 25, 0, 0, TipoAtividade.SAUDE),
+                new AcaoLazer("Fazer um Check-up", "Custo: R$ 150 | Saúde: +30 | Duração: 1 dia", 150.00, -10, 30, 0, 1, TipoAtividade.SAUDE),
+                new AcaoLazer("Consulta no Hospital", "Custo: R$ 500 | Saúde: +50 | Duração: 1 dia", 500.00, -20, 50, 0, 1, TipoAtividade.SAUDE),
 
-            // --- Atividades de SANIDADE ---
-            new AcaoLazer("Jogar Online com Amigos", "Custo: R$ 0 | Sanidade: +3", 0.00, -5, 0, 3, 0, TipoAtividade.SANIDADE),
-            new AcaoLazer("Meditar por 15 minutos", "Custo: R$ 5 | Sanidade: +5", 5.00, 5, 0, 5, 0, TipoAtividade.SANIDADE),
-            new AcaoLazer("Ir ao Cinema", "Custo: R$ 30 | Sanidade: +10", 30.00, -10, 0, 10, 0, TipoAtividade.SANIDADE),
-            new AcaoLazer("Sair com os Amigos", "Custo: R$ 50 | Sanidade: +15", 50.00, -15, 0, 15, 0, TipoAtividade.SANIDADE),
-            new AcaoLazer("Ir a um Show", "Custo: R$ 100 | Sanidade: +25", 100.00, -20, 0, 25, 0, TipoAtividade.SANIDADE),
-            new AcaoLazer("Sessão de Terapia", "Custo: R$ 500 | Sanidade: +50 | Duração: 1 dia", 500.00, -10, 0, 50, 1, TipoAtividade.SANIDADE)
+                // --- Atividades de SANIDADE ---
+                new AcaoLazer("Jogar Online com Amigos", "Custo: R$ 0 | Sanidade: +3", 0.00, -5, 0, 3, 0, TipoAtividade.SANIDADE),
+                new AcaoLazer("Meditar por 15 minutos", "Custo: R$ 5 | Sanidade: +5", 5.00, 5, 0, 5, 0, TipoAtividade.SANIDADE),
+                new AcaoLazer("Ir ao Cinema", "Custo: R$ 30 | Sanidade: +10", 30.00, -10, 0, 10, 0, TipoAtividade.SANIDADE),
+                new AcaoLazer("Sair com os Amigos", "Custo: R$ 50 | Sanidade: +15", 50.00, -15, 0, 15, 0, TipoAtividade.SANIDADE),
+                new AcaoLazer("Ir a um Show", "Custo: R$ 100 | Sanidade: +25", 100.00, -20, 0, 25, 0, TipoAtividade.SANIDADE),
+                new AcaoLazer("Sessão de Terapia", "Custo: R$ 500 | Sanidade: +50 | Duração: 1 dia", 500.00, -10, 0, 50, 1, TipoAtividade.SANIDADE)
+        );
+
+        this.todosOsEventos = List.of(
+                new Evento("Campus Party", "Um dos maiores eventos de tecnologia, inovação, ciência e cultura digital do mundo.", "12 a 16 de Março de 2026", "São Paulo Expo – São Paulo/SP", "Estudantes, profissionais de TI, gamers e entusiastas.", 120, 80, 300.00, 70, 5, true),
+                new Evento("Semana da Computação UNICAP", "Evento acadêmico com palestras, oficinas e debates sobre TI.", "10 a 14 de Junho de 2026", "Universidade Católica de Pernambuco - Recife/PE", "Estudantes e iniciantes.", 60, 40, 0.00, 30, 5, false),
+                new Evento("REC'n'Play", "Festival nacional que integra tecnologia, inovação, cultura e economia criativa.", "20 a 23 de Outubro de 2026", "Bairro do Recife - Recife/PE", "Profissionais criativos, TI e startups.", 90, 100, 50.00, 50, 4, false),
+                new Evento("Olinda Tech Week", "Semana de workshops e palestras sobre tendências tecnológicas.", "5 e 6 de Setembro de 2026", "Centro Cultural de Olinda – Olinda/PE", "Entusiastas e recém-chegados à área.", 70, 60, 40.00, 45, 2, false),
+                new Evento("Python Nordeste", "Encontro regional da comunidade Python focado em palestras, minicursos e networking.", "18 e 19 de Julho de 2026", "Fortaleza/CE", "Programadores e cientistas de dados.", 100, 85, 90.00, 55, 2, false),
+                new Evento("ExpoTI Recife", "Feira tecnológica com exposição de empresas, workshops e oportunidades de carreira.", "14 de Agosto de 2026", "Centro de Convenções de Pernambuco – Recife/PE", "Profissionais e estudantes de TI.", 80, 50, 20.00, 35, 1, false),
+                new Evento("DevOps Brasil Summit", "Conferência voltada para práticas DevOps, automação e infraestrutura moderna.", "3 a 5 de Novembro de 2026", "São Paulo/SP", "Profissionais de infraestrutura e desenvolvimento.", 110, 95, 150.00, 60, 3, false),
+                new Evento("Front-End Experience Day", "Dia inteiro de talks sobre UI/UX, frameworks modernos e carreira front-end.", "27 de Abril de 2026", "Porto Digital – Recife/PE", "Devs front-end e designers.", 65, 75, 30.00, 40, 1, false),
+                new Evento("Cyber Security Expo", "Evento focado em segurança cibernética, com oficinas, palestras e simulações.", "21 e 22 de Agosto de 2026", "Curitiba/PR", "Analistas e profissionais de segurança.", 130, 120, 200.00, 85, 2, false),
+                new Evento("Encontro de Inovação e Startups", "Conecta empreendedores e investidores, com pitches e painéis sobre inovação.", "9 de Dezembro de 2026", "Belo Horizonte/MG", "Profissionais de startups e inovação.", 95, 110, 60.00, 50, 1, false)
         );
     }
 
@@ -219,6 +236,15 @@ public final class GerenciadorDeAcoes {
 
     public List<Curso> getCursosDisponiveis(Jogador jogador) {
         return List.copyOf(todosOsCursos);
+    }
+
+    public List<Evento> getEventosDisponiveis(Jogador jogador) {
+        // No futuro, podemos adicionar um filtro de data aqui para exibir apenas eventos futuros.
+        return todosOsEventos.stream()
+                .filter(evento -> !jogador.jaConcluiuEvento(evento)) // Filtra os que ele já participou
+                .filter(evento -> jogador.getDinheiro() >= evento.getCustoFinanceiro()) // Filtra se pode pagar
+                .filter(evento -> jogador.getEnergia() > evento.getEnergiaConsumida()) // Filtra se tem energia suficiente
+                .collect(Collectors.toList());
     }
 
     // MÉTODO ATUALIZADO PARA FILTRAR POR TIPO
