@@ -16,8 +16,10 @@ public final class Projeto {
     private final int sanidadeCusto;
     private final int networkingGanho;
     private final Map<String, NivelHabilidade> requisitos;
+    private final int duracaoEmDias; // NOVO ATRIBUTO
+    private final NivelCargo nivelRequerido; // NOVO ATRIBUTO
 
-    public Projeto(String nome, String descricao, int xpGanho, double dinheiroGanho, int energiaCusto, int sanidadeCusto, int networkingGanho, Map<String, NivelHabilidade> requisitos) {
+    public Projeto(String nome, String descricao, int xpGanho, double dinheiroGanho, int energiaCusto, int sanidadeCusto, int networkingGanho, int duracaoEmDias, NivelCargo nivelRequerido, Map<String, NivelHabilidade> requisitos) {
         this.nome = Objects.requireNonNull(nome, "O nome não pode ser nulo.");
         this.descricao = Objects.requireNonNull(descricao, "A descrição não pode ser nula.");
         this.xpGanho = xpGanho;
@@ -25,44 +27,28 @@ public final class Projeto {
         this.energiaCusto = energiaCusto;
         this.sanidadeCusto = sanidadeCusto;
         this.networkingGanho = networkingGanho;
+        this.duracaoEmDias = duracaoEmDias;
+        this.nivelRequerido = nivelRequerido;
         this.requisitos = (requisitos != null) ? Collections.unmodifiableMap(requisitos) : Collections.emptyMap();
     }
 
-    public String getNome() {
-        return nome;
-    }
+    // Getters existentes (sem alteração)
+    public String getNome() { return nome; }
+    public String getDescricao() { return descricao; }
+    public int getXpGanho() { return xpGanho; }
+    public double getDinheiroGanho() { return dinheiroGanho; }
+    public int getEnergiaCusto() { return energiaCusto; }
+    public int getSanidadeCusto() { return sanidadeCusto; }
+    public int getNetworkingGanho() { return networkingGanho; }
+    public Map<String, NivelHabilidade> getRequisitos() { return requisitos; }
 
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public int getXpGanho() {
-        return xpGanho;
-    }
-
-    public double getDinheiroGanho() {
-        return dinheiroGanho;
-    }
-
-    public int getEnergiaCusto() {
-        return energiaCusto;
-    }
-
-    public int getSanidadeCusto() {
-        return sanidadeCusto;
-    }
-
-    public int getNetworkingGanho() {
-        return networkingGanho;
-    }
-
-    public Map<String, NivelHabilidade> getRequisitos() {
-        return requisitos;
-    }
+    // NOVOS GETTERS
+    public int getDuracaoEmDias() { return duracaoEmDias; }
+    public NivelCargo getNivelRequerido() { return nivelRequerido; }
 
     @Override
     public String toString() {
-        return "Projeto{" + "nome='" + nome + '\'' + ", xpGanho=" + xpGanho + ", dinheiroGanho=" + dinheiroGanho + ", energiaCusto=" + energiaCusto + '}';
+        return "Projeto{" + "nome='" + nome + '\'' + ", xpGanho=" + xpGanho + ", dinheiroGanho=" + dinheiroGanho + '}';
     }
     @Override
     public boolean equals(Object o) {

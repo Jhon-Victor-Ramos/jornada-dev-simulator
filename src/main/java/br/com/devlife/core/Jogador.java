@@ -1,11 +1,16 @@
 package br.com.devlife.core;
 
+import br.com.devlife.domain.Projeto;
 import br.com.devlife.domain.enums.AreaAtuacao;
 import br.com.devlife.domain.enums.NivelCargo;
+import br.com.devlife.domain.enums.NivelHabilidade;
+import br.com.devlife.domain.Vaga;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
-import br.com.devlife.domain.enums.NivelHabilidade;
 
 public class Jogador {
     private final String nome;
@@ -13,11 +18,14 @@ public class Jogador {
     private int saude;
     private int sanidade;
     private int energia;
+    private double salario;
     private double dinheiro;
     private int experiencia;
     private int networking;
     private NivelCargo cargo;
     private final Map<String, NivelHabilidade> habilidades;
+    private final List<Projeto> projetosConcluidos;
+    private Vaga vagaAtual;
 
     public Jogador(String nome, AreaAtuacao areaAtuacao, NivelCargo cargoInicial) {
         this.nome = nome;
@@ -27,18 +35,19 @@ public class Jogador {
         this.sanidade = 100;
         this.energia = 100;
         this.dinheiro = 500.00;
+        this.salario = 0.00;
         this.experiencia = 0;
         this.networking = 10;
         this.habilidades = new HashMap<>();
+        this.projetosConcluidos = new ArrayList<>();
+        this.vagaAtual = null;
         inicializarHabilidadesPorArea();
     }
 
-    // Adiciona habilidades de acordo com a area escolhida pelo jogador inicialmente
     private void inicializarHabilidadesPorArea() {
         switch (this.areaAtuacao) {
             case FRONTEND:
-                // ANTES: this.habilidades.put("HTML", "Iniciante");
-                this.habilidades.put("HTML", NivelHabilidade.INICIANTE); // DEPOIS
+                this.habilidades.put("HTML", NivelHabilidade.INICIANTE);
                 this.habilidades.put("CSS", NivelHabilidade.INICIANTE);
                 this.habilidades.put("JavaScript", NivelHabilidade.INICIANTE);
                 break;
@@ -51,6 +60,7 @@ public class Jogador {
     }
 
     public void aplicarPenalidadesTurno() {
+        // Esta lógica pode ser movida para o MotorDoJogo no futuro
         if (this.sanidade < 30) {
             System.out.println(this.nome + " está se sentindo esgotado mentalmente. A energia caiu mais rápido!");
             alterarRecursoVital("energia", -15);
@@ -59,18 +69,17 @@ public class Jogador {
             System.out.println(this.nome + " está se sentindo mal. A energia caiu mais rápido!");
             alterarRecursoVital("energia", -10);
         }
-        // Penalidade padrão de energia por turno
         alterarRecursoVital("energia", -5);
     }
 
     public void alterarRecursoVital(String recurso, int valor) {
-        int valorAtual = 0;
+        int valorAtual;
         switch (recurso.toLowerCase()) {
             case "saude":
                 valorAtual = this.saude;
                 this.saude = Math.max(0, Math.min(100, valorAtual + valor));
                 break;
-            case "sanidade":
+                case "sanidade":
                 valorAtual = this.sanidade;
                 this.sanidade = Math.max(0, Math.min(100, valorAtual + valor));
                 break;
@@ -83,11 +92,6 @@ public class Jogador {
         }
     }
 
-    /**
-     * Atualiza o nível de uma habilidade seguindo a progressão:
-     * (Nenhuma) -> Iniciante -> Intermediário -> Avançado
-     * @param habilidade O nome da habilidade a ser aprendida ou melhorada.
-     */
     public void aprenderOuMelhorarHabilidade(String habilidade) {
         NivelHabilidade nivelAtual = this.habilidades.getOrDefault(habilidade, NivelHabilidade.NENHUM);
         NivelHabilidade novoNivel;
@@ -104,18 +108,17 @@ public class Jogador {
                 break;
             case AVANCADO:
                 System.out.println("Habilidade " + habilidade + " já está no nível máximo!");
-                return; // Encerra o método
+                return;
             default:
-                novoNivel = NivelHabilidade.INICIANTE; // Segurança
+                novoNivel = NivelHabilidade.INICIANTE;
                 break;
         }
         this.habilidades.put(habilidade, novoNivel);
         System.out.println("Habilidade " + habilidade + " melhorada para o nível " + novoNivel.getNomeExibicao() + "!");
     }
 
-    // Retorna o nível da habilidade como String
     public NivelHabilidade getNivelHabilidade(String habilidade) {
-        return this.habilidades.getOrDefault(habilidade, NivelHabilidade.NENHUM); // DEPOIS
+        return this.habilidades.getOrDefault(habilidade, NivelHabilidade.NENHUM);
     }
 
     public boolean temDinheiroSuficiente(double valor) {
@@ -140,18 +143,56 @@ public class Jogador {
         }
     }
 
+    // --- NOVOS MÉTODOS PARA RASTREAR PROJETOS ---
+
+    /**
+     * Adiciona um projeto à lista de projetos concluídos pelo jogador.
+     * @param projeto O projeto que foi finalizado.
+     */
+    public void completarProjeto(Projeto projeto) {
+        if (!this.projetosConcluidos.contains(projeto)) {
+            this.projetosConcluidos.add(projeto);
+        }
+    }
+
+    /**
+     * Verifica se o jogador já completou um determinado projeto.
+     * @param projeto O projeto a ser verificado.
+     * @return true se o projeto já foi concluído, false caso contrário.
+     */
+    public boolean jaConcluiuProjeto(Projeto projeto) {
+        return this.projetosConcluidos.contains(projeto);
+    }
+
+    /**
+     * Define ou atualiza o nível de uma habilidade do jogador.
+     * Substitui o método de progressão incremental para um controle mais direto.
+     * @param habilidade O nome da habilidade.
+     * @param novoNivel O novo nível da habilidade.
+     */
+    public void setHabilidade(String habilidade, NivelHabilidade novoNivel) {
+        this.habilidades.put(habilidade, novoNivel);
+        System.out.println("Habilidade " + habilidade + " agora está no nível " + novoNivel.getNomeExibicao() + "!");
+    }
+
+    // --- Getters e Setters ---
     public String getNome() { return nome; }
     public AreaAtuacao getAreaAtuacao() { return areaAtuacao; }
     public int getSaude() { return saude; }
     public int getSanidade() { return sanidade; }
     public int getEnergia() { return energia; }
     public double getDinheiro() { return dinheiro; }
+    public double getSalario() { return salario; }
+    public void setSalario(double salario) { this.salario = salario; }
     public int getExperiencia() { return experiencia; }
     public int getNetworking() { return networking; }
     public NivelCargo getCargo() { return cargo; }
     public Map<String, NivelHabilidade> getHabilidades() { return new HashMap<>(habilidades); }
     public void setCargo(NivelCargo novoCargo) { this.cargo = novoCargo; }
     public void setNetworking(int networking) { this.networking = networking; }
+    public void setEnergia(int energia) { this.energia = Math.max(0, Math.min(100, energia)); }
+    public Vaga getVagaAtual() { return vagaAtual; }
+    public void setVagaAtual(Vaga vagaAtual) { this.vagaAtual = vagaAtual; }
 
     @Override
     public String toString() {
@@ -166,6 +207,7 @@ public class Jogador {
                 .add("experiencia=" + experiencia)
                 .add("networking=" + networking)
                 .add("habilidades=" + habilidades)
+                .add("projetosConcluidos=" + projetosConcluidos.size()) // Apenas para debug
                 .toString();
     }
 }

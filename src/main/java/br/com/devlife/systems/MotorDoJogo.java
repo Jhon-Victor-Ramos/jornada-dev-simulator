@@ -2,56 +2,141 @@ package br.com.devlife.systems;
 
 import br.com.devlife.core.Jogador;
 import br.com.devlife.domain.AcaoLazer;
+import br.com.devlife.domain.Projeto;
+import br.com.devlife.domain.Vaga;
 import br.com.devlife.domain.enums.AreaAtuacao;
 import br.com.devlife.domain.enums.NivelCargo;
+import br.com.devlife.domain.enums.TipoAtividade;
+import br.com.devlife.domain.Curso;
 import br.com.devlife.ui.TerminalUI;
-import br.com.devlife.domain.Projeto;
 import java.util.List;
 
 public class MotorDoJogo {
-    private int diaAtual = 1;
+    private int diaAtual = 0; // MUDANÇA: O jogo começa no dia 0
     private Jogador jogador;
     private final TerminalUI terminal;
     private final GerenciadorDeAcoes gerenciador;
 
+
     public MotorDoJogo() {
         this.terminal = new TerminalUI();
-        this.jogador = new Jogador("Dev Comum", AreaAtuacao.BACKEND, NivelCargo.ESTAGIARIO_INICIO);
         this.gerenciador = new GerenciadorDeAcoes();
     }
 
     public void iniciar() {
-        String log = "Bem-vindo ao DevLife! Sua jornada como dev começa agora.";
+        // --- ETAPA 1: ONBOARDING DO JOGADOR ---
+        terminal.exibirTelaBoasVindas();
+        String nomeJogador = terminal.pedirNomeJogador();
+        AreaAtuacao areaAtuacao = terminal.pedirAreaAtuacao();
+
+        this.jogador = new Jogador(nomeJogador, areaAtuacao, NivelCargo.ESTAGIARIO_INICIO);
+
+        // --- ETAPA 2: O JOGO COMEÇA ---
+        String log = "Bem-vindo ao DevLife, " + nomeJogador + "! Sua jornada como dev começa agora.";
         boolean jogoRodando = true;
 
         while (jogoRodando) {
+            // MUDANÇA: Lógica de falta de energia foi melhorada
             if (jogador.getEnergia() <= 0) {
-                log = "Você ficou sem energia e desmaiou! O jogo acabou.";
-                terminal.exibirDashboard(jogador, log);
-                jogoRodando = false;
-                continue;
+                log = "Você ficou sem energia e desmaiou! Passando para o próximo dia para descansar...";
+                terminal.exibirDashboard(jogador, log, diaAtual);
+                terminal.esperarEnterParaContinuar();
+                avancarDias(1); // Força o avanço de 1 dia para recuperar energia
+                continue; // Pula para a próxima iteração do loop
             }
 
-            terminal.exibirDashboard(jogador, log);
+            terminal.exibirDashboard(jogador, log, diaAtual);
             int opcao = terminal.lerOpcao();
 
+            // MUDANÇA: O switch foi completamente reescrito para o novo menu
             switch (opcao) {
-                case 1:
-                    terminal.exibirMensagemComDelay("Verificando projetos compatíveis com suas habilidades...", 1500);
+                case 1: // Minhas Habilidades
+                    terminal.exibirMenuHabilidades(jogador);
+                    terminal.esperarEnterParaContinuar();
+                    log = "Você analisou seu progresso e suas habilidades.";
+                    break;
+
+                case 2: // Estudos (WIP)
+                    terminal.exibirMensagemComDelay("Verificando catálogo de cursos...", 1500);
+                    List<Curso> cursosDisponiveis = gerenciador.getCursosDisponiveis(jogador);
+                    int escolhaCurso = terminal.exibirSubMenuCursos(cursosDisponiveis);
+
+                    if (escolhaCurso > 0 && escolhaCurso <= cursosDisponiveis.size()) {
+                        Curso cursoEscolhido = cursosDisponiveis.get(escolhaCurso - 1);
+
+                        int custoTotalEnergia = cursoEscolhido.getEnergiaCustoPorDia() * cursoEscolhido.getDuracaoEmDias();
+                        int custoTotalSanidade = cursoEscolhido.getSanidadeCustoPorDia() * cursoEscolhido.getDuracaoEmDias();
+                        
+                        jogador.gastarDinheiro(cursoEscolhido.getCustoDinheiro());
+                        // Supondo que o jogador sempre tem energia para estudar
+                        jogador.alterarRecursoVital("energia", -custoTotalEnergia);
+                        jogador.alterarRecursoVital("sanidade", -custoTotalSanidade);
+                        jogador.setHabilidade(cursoEscolhido.getHabilidadeEnsinada(), cursoEscolhido.getNivelResultante());
+                        jogador.adicionarExperiencia(cursoEscolhido.getXpGanho());
+                        
+                        log = "Curso '" + cursoEscolhido.getNome() + "' concluído com sucesso!";
+                        avancarDias(cursoEscolhido.getDuracaoEmDias());
+                        
+                    } else {
+                        log = "Nenhum curso selecionado.";
+                    }
+                    break;
+
+
+                case 3: // Vagas de Trabalho (WIP)
+                    terminal.exibirMensagemComDelay("Buscando oportunidades no mercado...", 1500);
+                    List<Vaga> vagasDisponiveis = gerenciador.getVagasDisponiveis(jogador, this.diaAtual);
+                    int escolhaVaga = terminal.exibirSubMenuVagas(vagasDisponiveis);
+
+                    if (escolhaVaga > 0 && escolhaVaga <= vagasDisponiveis.size()) {
+                        Vaga vagaEscolhida = vagasDisponiveis.get(escolhaVaga - 1);
+                        
+                        if (gerenciador.jogadorTemRequisitosParaVaga(jogador, vagaEscolhida)) {
+                            log = "Parabéns! Você foi contratado como " + vagaEscolhida.getTituloVaga() + " na " + vagaEscolhida.getNomeEmpresa() + "!";
+                            terminal.exibirMensagemComDelay(log, 2500);
+                            
+                            jogador.setCargo(vagaEscolhida.getNivelPromocao());
+                            jogador.setVagaAtual(vagaEscolhida);
+                            jogador.adicionarExperiencia(vagaEscolhida.getXpBonus());
+                            jogador.setNetworking(jogador.getNetworking() + vagaEscolhida.getNetBonus());
+                            jogador.setSalario(vagaEscolhida.getSalario());
+                            
+                            if (jogador.getCargo() == NivelCargo.CEO) {
+                                terminal.exibirMensagemComDelay("VOCÊ ATINGIU O TOPO! ZEROU O JOGO!", 5000);
+                                jogoRodando = false;
+                            }
+                            
+                        } else {
+                            log = "Você não tem os requisitos para a vaga de " + vagaEscolhida.getTituloVaga() + ".";
+                        }
+                    } else {
+                        log = "Nenhuma vaga selecionada.";
+                    }
+                    break;
+
+                case 4: // Eventos (WIP)
+                    terminal.exibirMensagemComDelay("Funcionalidade de Eventos em desenvolvimento...", 1500);
+                    log = "Nenhum evento interessante no momento.";
+                    break;
+
+                case 5: // Projetos
+                    terminal.exibirMensagemComDelay("Verificando projetos compatíveis com seu nível e habilidades...", 1500);
                     List<Projeto> projetosDisponiveis = gerenciador.getProjetosDisponiveis(jogador);
                     int escolhaProjeto = terminal.exibirSubMenuProjetos(projetosDisponiveis);
 
                     if (escolhaProjeto > 0 && escolhaProjeto <= projetosDisponiveis.size()) {
                         Projeto projetoEscolhido = projetosDisponiveis.get(escolhaProjeto - 1);
 
+                        // Aplica todos os efeitos do projeto
                         jogador.adicionarExperiencia(projetoEscolhido.getXpGanho());
                         jogador.adicionarDinheiro(projetoEscolhido.getDinheiroGanho());
                         jogador.alterarRecursoVital("energia", -projetoEscolhido.getEnergiaCusto());
                         jogador.alterarRecursoVital("sanidade", -projetoEscolhido.getSanidadeCusto());
                         jogador.setNetworking(jogador.getNetworking() + projetoEscolhido.getNetworkingGanho());
+                        jogador.completarProjeto(projetoEscolhido); // Marca o projeto como concluído
 
-                        log = "Você completou o projeto: '" + projetoEscolhido.getNome() + "'.";
-                        // Assumindo que um projeto leva 1 dia para ser concluído
+                        log = "Projeto '" + projetoEscolhido.getNome() + "' concluído com sucesso!";
+                        avancarDias(projetoEscolhido.getDuracaoEmDias()); // Avança o tempo
 
                     } else if (escolhaProjeto == 0) {
                         log = "Você decidiu não pegar nenhum projeto por enquanto.";
@@ -59,34 +144,39 @@ public class MotorDoJogo {
                         log = "Opção de projeto inválida.";
                     }
                     break;
-                case 2:
-                    terminal.exibirMensagemComDelay("Funcionalidade de cursos ainda em desenvolvimento...", 1500);
-                    log = "Você decidiu não estudar hoje.";
-                    break;
-                case 3:
-                    terminal.exibirMensagemComDelay("Verificando o que você pode fazer para relaxar...", 1500);
-                    List<AcaoLazer> acoesDisponiveis = gerenciador.getAcoesLazerDisponiveis(jogador);
-                    int escolhaAcao = terminal.exibirSubMenuCuidarDeSi(acoesDisponiveis);
 
-                    if (escolhaAcao > 0 && escolhaAcao <= acoesDisponiveis.size()) {
-                        AcaoLazer acaoEscolhida = acoesDisponiveis.get(escolhaAcao - 1);
+                case 6: // Lista de Atividades
+                    TipoAtividade tipoEscolhido = terminal.exibirSubMenuEscolhaAtividade();
+                    if (tipoEscolhido != null) { // Se for null, o usuário escolheu voltar
+                        terminal.exibirMensagemComDelay("Verificando atividades disponíveis...", 1000);
+                        List<AcaoLazer> acoesDisponiveis = gerenciador.getAcoesLazerDisponiveis(jogador, tipoEscolhido);
+                        int escolhaAcao = terminal.exibirSubMenuAtividades(acoesDisponiveis);
 
-                        jogador.gastarDinheiro(acaoEscolhida.getCustoDinheiro());
-                        jogador.alterarRecursoVital("energia", acaoEscolhida.getBonusEnergia());
-                        jogador.alterarRecursoVital("saude", acaoEscolhida.getBonusSaude());
-                        jogador.alterarRecursoVital("sanidade", acaoEscolhida.getBonusSanidade());
+                        if (escolhaAcao > 0 && escolhaAcao <= acoesDisponiveis.size()) {
+                            AcaoLazer acaoEscolhida = acoesDisponiveis.get(escolhaAcao - 1);
 
-                        if (acaoEscolhida.getDuracaoEmDias() > 0) {
-                            avancarDias(acaoEscolhida.getDuracaoEmDias());
+                            jogador.gastarDinheiro(acaoEscolhida.getCustoDinheiro());
+                            jogador.alterarRecursoVital("energia", acaoEscolhida.getBonusEnergia());
+                            jogador.alterarRecursoVital("saude", acaoEscolhida.getBonusSaude());
+                            jogador.alterarRecursoVital("sanidade", acaoEscolhida.getBonusSanidade());
+
+                            log = "Você decidiu: " + acaoEscolhida.getNome() + ".";
+                            if (acaoEscolhida.getDuracaoEmDias() > 0) {
+                                avancarDias(acaoEscolhida.getDuracaoEmDias());
+                            }
+                        } else {
+                            log = "Nenhuma atividade selecionada.";
                         }
-
-                        log = "Você decidiu: " + acaoEscolhida.getNome();
-                    } else if (escolhaAcao == 0) {
-                        log = "Você decidiu focar no trabalho por enquanto.";
                     } else {
-                        log = "Opção de lazer inválida.";
+                        log = "Você voltou ao menu principal.";
                     }
                     break;
+
+                case 7: // Finalizar o dia
+                    log = "Você finalizou o dia e foi descansar.";
+                    avancarDias(1);
+                    break;
+
                 default:
                     log = "Opção inválida, tente novamente.";
                     break;
@@ -95,10 +185,39 @@ public class MotorDoJogo {
         terminal.exibirMensagemComDelay("Fim de jogo. Obrigado por jogar!", 3000);
     }
 
+    /**
+     * Avança o tempo no jogo, restaurando a energia do jogador para 100 a cada dia.
+     * @param dias O número de dias a avançar.
+     */
     private void avancarDias(int dias) {
+        String logPagamento = "";
         for (int i = 0; i < dias; i++) {
             this.diaAtual++;
-            jogador.alterarRecursoVital("energia", 40);
+            // MUDANÇA: A energia aumenta em 20 pontos no início de cada novo dia.
+            jogador.alterarRecursoVital("energia", 20);
+
+            if (this.diaAtual % 30 == 0 && jogador.getSalario() > 0) {
+                jogador.adicionarDinheiro(jogador.getSalario());
+                logPagamento = String.format(" | VOCÊ RECEBEU SEU SALÁRIO DE R$ %.2f!", jogador.getSalario());
+            }
+
+            Vaga vagaAtual = jogador.getVagaAtual();
+            if (vagaAtual != null) {
+                // Pega os valores de penalidade da vaga
+                int penalidadeSanidade = vagaAtual.getPenalidadeDiariaSanidade();
+                int penalidadeEnergia = vagaAtual.getPenalidadeDiariaEnergia();
+
+                if (penalidadeSanidade > 0) {
+                    jogador.alterarRecursoVital("sanidade", -penalidadeSanidade);
+                }
+                if (penalidadeEnergia > 0) {
+                    jogador.alterarRecursoVital("energia", -penalidadeEnergia);
+                }
+            }
+            if (!logPagamento.isEmpty()) {
+                terminal.exibirDashboard(jogador, logPagamento.substring(3), diaAtual);
+                terminal.esperarEnterParaContinuar();
+            }
         }
     }
 }
