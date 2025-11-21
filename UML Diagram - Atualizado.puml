@@ -1,0 +1,250 @@
+@startuml
+'left to right direction
+skinparam packageStyle rectangle
+skinparam roundcorner 10
+skinparam classAttributeIconSize 0
+
+' --- ENUMS ---
+package "br.com.devlife.domain.enums" {
+  enum AreaAtuacao {
+    FRONTEND
+    BACKEND
+  }
+
+  enum NivelCargo {
+    ESTAGIARIO_INICIO
+    ESTAGIARIO
+    JUNIOR
+    PLENO
+    SENIOR
+    CEO
+    --
+    - valor: int
+    --
+    + getValor(): int
+  }
+
+  enum NivelHabilidade {
+    NENHUM
+    INICIANTE
+    INTERMEDIARIO
+    AVANCADO
+    --
+    - valor: int
+    - nomeExibicao: String
+    --
+    + getValor(): int
+    + getNomeExibicao(): String
+  }
+
+  enum TipoAtividade {
+    SAUDE
+    SANIDADE
+  }
+}
+
+' --- DOMAIN ---
+package "br.com.devlife.domain" {
+  class AcaoLazer {
+    - nome: String
+    - descricao: String
+    - custoDinheiro: double
+    - bonusEnergia: int
+    - bonusSaude: int
+    - bonusSanidade: int
+    - duracaoEmDias: int
+    - tipo: TipoAtividade
+  }
+
+  class Curso {
+    - nome: String
+    - custoDinheiro: double
+    - duracaoEmDias: int
+    - habilidadeEnsinada: String
+    - nivelResultante: NivelHabilidade
+    - xpGanho: int
+    - requisitos: Map<String, NivelHabilidade>
+    - energiaCustoPorDia: int
+    - sanidadeCustoPorDia: int
+    - nivelMinimo: NivelCargo
+  }
+
+  class Evento {
+    - nome: String
+    - descricao: String
+    - data: String
+    - local: String
+    - publicoAlvo: String
+    - xpGanho: int
+    - networkingGanho: int
+    - custoFinanceiro: double
+    - energiaConsumida: int
+    - duracaoEmDias: int
+    - possuiBonusEspecial: boolean
+  }
+
+  class Projeto {
+    - nome: String
+    - descricao: String
+    - xpGanho: int
+    - dinheiroGanho: double
+    - energiaCusto: int
+    - sanidadeCusto: int
+    - networkingGanho: int
+    - requisitos: Map<String, NivelHabilidade>
+    - duracaoEmDias: int
+    - nivelRequerido: NivelCargo
+  }
+
+  class Vaga {
+    - nomeEmpresa: String
+    - tituloVaga: String
+    - salario: double
+    - xpBonus: int
+    - netBonus: int
+    - penalidadeDiariaSanidade: int
+    - penalidadeDiariaEnergia: int
+    - requisitos: Map<String, NivelHabilidade>
+    - diasValidade: int
+    - nivelRequerido: NivelCargo
+    - nivelPromocao: NivelCargo
+  }
+}
+
+' --- CORE ---
+package "br.com.devlife.core" {
+  class Jogador {
+    - nome: String
+    - areaAtuacao: AreaAtuacao
+    - saude: int
+    - sanidade: int
+    - energia: int
+    - salario: double
+    - dinheiro: double
+    - experiencia: int
+    - networking: int
+    - cargo: NivelCargo
+    - habilidades: Map<String, NivelHabilidade>
+    - projetosConcluidos: List<Projeto>
+    - eventosConcluidos: List<Evento>
+    - cursosConcluidos: List<Curso>
+    - vagaAtual: Vaga
+    - temDescontoCursos: boolean
+    --
+    + alterarRecursoVital(recurso: String, valor: int): void
+    + temDinheiroSuficiente(valor: double): boolean
+    + adicionarDinheiro(quantia: double): void
+    + gastarDinheiro(quantia: double): void
+    + adicionarExperiencia(pontosXP: int): void
+    + completarProjeto(projeto: Projeto): void
+    + jaConcluiuProjeto(projeto: Projeto): boolean
+    + concluirEvento(evento: Evento): void
+    + jaConcluiuEvento(evento: Evento): boolean
+    + completarCurso(curso: Curso): void
+    + jaConcluiuCurso(curso: Curso): boolean
+  }
+}
+
+' --- SYSTEMS ---
+package "br.com.devlife.systems" {
+  class GerenciadorDeAcoes {
+    - todosOsProjetos: List<Projeto>
+    - todosOsCursos: List<Curso>
+    - todasAsAcoesLazer: List<AcaoLazer>
+    - todasAsVagas: List<Vaga>
+    - todosOsEventos: List<Evento>
+    - softSkills: Set<String>
+    --
+    + getVagasDisponiveis(jogador: Jogador, diaAtual: int): List<Vaga>
+    + jogadorTemRequisitosParaVaga(jogador: Jogador, vaga: Vaga): boolean
+    + getProjetosDisponiveis(jogador: Jogador): List<Projeto>
+    + getCursosDisponiveis(jogador: Jogador): List<Curso>
+    + getEventosDisponiveis(jogador: Jogador): List<Evento>
+    + getAcoesLazerDisponiveis(jogador: Jogador, tipo: TipoAtividade): List<AcaoLazer>
+    - jogadorTemRequisitosParaCurso(jogador: Jogador, curso: Curso): boolean
+    - cursoMelhoraHabilidade(jogador: Jogador, curso: Curso): boolean
+  }
+
+  class MotorDoJogo {
+    - diaAtual: int
+    - jogador: Jogador
+    - terminal: TerminalUI
+    - gerenciador: GerenciadorDeAcoes
+    --
+    + iniciar(): void
+    - avancarDias(dias: int): void
+  }
+}
+
+' --- UI ---
+package "br.com.devlife.ui" {
+  class TerminalUI {
+    - scanner: Scanner
+    --
+    + exibirDashboard(jogador: Jogador, log: String, diaAtual: int): void
+    + exibirSubMenuProjetos(projetos: List<Projeto>): int
+    + exibirSubMenuCursos(cursos: List<Curso>): int
+    + exibirSubMenuVagas(vagas: List<Vaga>): int
+    + exibirSubMenuAtividades(acoes: List<AcaoLazer>): int
+    + exibirInformacoesEventos(eventos: List<Evento>): void
+    + lerOpcao(): int
+    + pedirNomeJogador(): String
+    + pedirAreaAtuacao(): AreaAtuacao
+  }
+}
+
+' --- MAIN ---
+package "br.com.devlife" {
+  class Main {
+    {static} + main(args: String[]): void
+  }
+}
+
+' --- RELACIONAMENTOS ---
+
+' Composição e Agregação
+MotorDoJogo *-- "1" GerenciadorDeAcoes
+MotorDoJogo *-- "1" TerminalUI
+MotorDoJogo *-- "1" Jogador
+GerenciadorDeAcoes *-- "*" Projeto
+GerenciadorDeAcoes *-- "*" Curso
+GerenciadorDeAcoes *-- "*" Vaga
+GerenciadorDeAcoes *-- "*" AcaoLazer
+GerenciadorDeAcoes *-- "*" Evento
+Jogador o-- "*" Projeto : projetosConcluidos
+Jogador o-- "*" Evento : eventosConcluidos
+Jogador o-- "*" Curso : cursosConcluidos
+
+' Associação
+Jogador --> "1" AreaAtuacao
+Jogador --> "1" NivelCargo : cargo
+Jogador --> "0..1" Vaga : vagaAtual
+Projeto --> "1" NivelCargo : nivelRequerido
+Vaga --> "1" NivelCargo : nivelRequerido
+Vaga --> "1" NivelCargo : nivelPromocao
+Curso --> "1" NivelHabilidade : nivelResultante
+Curso --> "1" NivelCargo : nivelMinimo
+AcaoLazer --> "1" TipoAtividade
+
+' Dependência
+Main ..> MotorDoJogo
+MotorDoJogo ..> Projeto
+MotorDoJogo ..> Curso
+MotorDoJogo ..> Vaga
+MotorDoJogo ..> Evento
+MotorDoJogo ..> AcaoLazer
+GerenciadorDeAcoes ..> Jogador
+TerminalUI ..> Jogador
+TerminalUI ..> Projeto
+TerminalUI ..> Curso
+TerminalUI ..> Vaga
+TerminalUI ..> Evento
+TerminalUI ..> AcaoLazer
+TerminalUI ..> AreaAtuacao
+TerminalUI ..> TipoAtividade
+Jogador ..> NivelHabilidade
+Projeto ..> NivelHabilidade
+Vaga ..> NivelHabilidade
+Curso ..> NivelHabilidade
+
+@enduml
