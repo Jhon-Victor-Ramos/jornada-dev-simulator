@@ -3,6 +3,7 @@ package br.com.devlife.ui;
 import br.com.devlife.core.Jogador;
 import br.com.devlife.domain.AcaoLazer;
 import br.com.devlife.domain.Curso;
+import br.com.devlife.domain.Evento;
 import br.com.devlife.domain.Projeto;
 import br.com.devlife.domain.Vaga;
 import br.com.devlife.domain.enums.AreaAtuacao;
@@ -185,6 +186,54 @@ public class TerminalUI {
         return lerOpcao();
     }
 
+    public int exibirMenuEventos() {
+        limparTela();
+        System.out.println(ANSI_BOLD + "=====================[ Sistema de Eventos ]=====================" + ANSI_RESET);
+        System.out.println("\nSelecione uma opção:\n");
+        System.out.println("  1. Exibir informações dos eventos");
+        System.out.println("  2. Realizar inscrição em um evento");
+        System.out.println("----------------------------------------------------------");
+        System.out.println("  0. Voltar ao menu principal\n");
+        return lerOpcao();
+    }
+
+    public void exibirInformacoesEventos(List<Evento> eventos) {
+        limparTela();
+        System.out.println(ANSI_BOLD + "===============[ Eventos Disponíveis e Informações ]===============" + ANSI_RESET + "\n");
+        if (eventos.isEmpty()) {
+            System.out.println("Nenhum evento disponível para você no momento (verifique seus recursos ou se já participou de todos).");
+        } else {
+            for (Evento evento : eventos) {
+                System.out.println(ANSI_BOLD + evento.getNome() + ANSI_RESET);
+                System.out.println("  Descrição: " + evento.getDescricao());
+                System.out.println("  Data: " + evento.getData() + " | Duração: " + evento.getDuracaoEmDias() + " dias");
+                System.out.println("  Local: " + evento.getLocal());
+                System.out.println("  Público: " + evento.getPublicoAlvo());
+                System.out.println(ANSI_CYAN + "  Ganhos: XP: +" + evento.getXpGanho() + " | Networking: +" + evento.getNetworkingGanho() + ANSI_RESET);
+                System.out.println(ANSI_YELLOW + "  Custos: Dinheiro: R$ " + String.format("%.2f", evento.getCustoFinanceiro()) + " | Energia: -" + evento.getEnergiaConsumida() + ANSI_RESET);
+                System.out.println("----------------------------------------------------------");
+            }
+        }
+        esperarEnterParaContinuar();
+    }
+
+    public int exibirMenuInscricao(List<Evento> eventos) {
+        limparTela();
+        System.out.println(ANSI_BOLD + "======================[ Inscrição em Evento ]======================" + ANSI_RESET + "\n");
+        if (eventos.isEmpty()) {
+            System.out.println("Nenhum evento disponível para inscrição (verifique seus recursos ou se já participou de todos).");
+        } else {
+            System.out.println("Eventos disponíveis para inscrição:\n");
+            for (int i = 0; i < eventos.size(); i++) {
+                Evento e = eventos.get(i);
+                System.out.printf("  %d. %s (Custo: R$ %.2f)\n", i + 1, e.getNome(), e.getCustoFinanceiro());
+            }
+        }
+        System.out.println("----------------------------------------------------------");
+        System.out.println("  0. Voltar\n");
+        return lerOpcao();
+    }
+
     public int lerOpcao() {
         System.out.print("> Escolha uma opção: ");
         while (!scanner.hasNextInt()) {
@@ -221,7 +270,7 @@ public class TerminalUI {
         }
         return sb.toString();
     }
-    
+
     private String formatarRequisitos(Map<String, NivelHabilidade> requisitos) {
         if (requisitos.isEmpty()) return "Nenhum";
         return requisitos.entrySet().stream()

@@ -1,5 +1,6 @@
 package br.com.devlife.core;
 
+import br.com.devlife.domain.Evento;
 import br.com.devlife.domain.Projeto;
 import br.com.devlife.domain.enums.AreaAtuacao;
 import br.com.devlife.domain.enums.NivelCargo;
@@ -25,7 +26,9 @@ public class Jogador {
     private NivelCargo cargo;
     private final Map<String, NivelHabilidade> habilidades;
     private final List<Projeto> projetosConcluidos;
+    private final List<Evento> eventosConcluidos;
     private Vaga vagaAtual;
+    private boolean temDescontoCursos = false; // << NOVA ALTERAÇÃO 1
 
     public Jogador(String nome, AreaAtuacao areaAtuacao, NivelCargo cargoInicial) {
         this.nome = nome;
@@ -40,6 +43,7 @@ public class Jogador {
         this.networking = 10;
         this.habilidades = new HashMap<>();
         this.projetosConcluidos = new ArrayList<>();
+        this.eventosConcluidos = new ArrayList<>();
         this.vagaAtual = null;
         inicializarHabilidadesPorArea();
     }
@@ -79,7 +83,7 @@ public class Jogador {
                 valorAtual = this.saude;
                 this.saude = Math.max(0, Math.min(100, valorAtual + valor));
                 break;
-                case "sanidade":
+            case "sanidade":
                 valorAtual = this.sanidade;
                 this.sanidade = Math.max(0, Math.min(100, valorAtual + valor));
                 break;
@@ -143,33 +147,26 @@ public class Jogador {
         }
     }
 
-    // --- NOVOS MÉTODOS PARA RASTREAR PROJETOS ---
-
-    /**
-     * Adiciona um projeto à lista de projetos concluídos pelo jogador.
-     * @param projeto O projeto que foi finalizado.
-     */
+    // --- MÉTODOS PARA RASTREAR PROJETOS ---
     public void completarProjeto(Projeto projeto) {
         if (!this.projetosConcluidos.contains(projeto)) {
             this.projetosConcluidos.add(projeto);
         }
     }
-
-    /**
-     * Verifica se o jogador já completou um determinado projeto.
-     * @param projeto O projeto a ser verificado.
-     * @return true se o projeto já foi concluído, false caso contrário.
-     */
     public boolean jaConcluiuProjeto(Projeto projeto) {
         return this.projetosConcluidos.contains(projeto);
     }
 
-    /**
-     * Define ou atualiza o nível de uma habilidade do jogador.
-     * Substitui o método de progressão incremental para um controle mais direto.
-     * @param habilidade O nome da habilidade.
-     * @param novoNivel O novo nível da habilidade.
-     */
+    // --- MÉTODOS PARA RASTREAR EVENTOS ---
+    public void concluirEvento(Evento evento) {
+        if (!this.eventosConcluidos.contains(evento)) {
+            this.eventosConcluidos.add(evento);
+        }
+    }
+    public boolean jaConcluiuEvento(Evento evento) {
+        return this.eventosConcluidos.contains(evento);
+    }
+
     public void setHabilidade(String habilidade, NivelHabilidade novoNivel) {
         this.habilidades.put(habilidade, novoNivel);
         System.out.println("Habilidade " + habilidade + " agora está no nível " + novoNivel.getNomeExibicao() + "!");
@@ -193,6 +190,14 @@ public class Jogador {
     public void setEnergia(int energia) { this.energia = Math.max(0, Math.min(100, energia)); }
     public Vaga getVagaAtual() { return vagaAtual; }
     public void setVagaAtual(Vaga vagaAtual) { this.vagaAtual = vagaAtual; }
+
+    public boolean temDescontoCursos() {
+        return temDescontoCursos;
+    }
+
+    public void setTemDescontoCursos(boolean temDescontoCursos) {
+        this.temDescontoCursos = temDescontoCursos;
+    }
 
     @Override
     public String toString() {
