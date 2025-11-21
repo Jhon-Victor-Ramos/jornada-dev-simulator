@@ -1,5 +1,6 @@
 package br.com.devlife.core;
 
+import br.com.devlife.domain.Curso;
 import br.com.devlife.domain.Evento;
 import br.com.devlife.domain.Projeto;
 import br.com.devlife.domain.enums.AreaAtuacao;
@@ -27,6 +28,7 @@ public class Jogador {
     private final Map<String, NivelHabilidade> habilidades;
     private final List<Projeto> projetosConcluidos;
     private final List<Evento> eventosConcluidos;
+    private final List<Curso> cursosConcluidos; // nova alteração
     private Vaga vagaAtual;
     private boolean temDescontoCursos = false; // << NOVA ALTERAÇÃO 1
 
@@ -44,6 +46,7 @@ public class Jogador {
         this.habilidades = new HashMap<>();
         this.projetosConcluidos = new ArrayList<>();
         this.eventosConcluidos = new ArrayList<>();
+        this.cursosConcluidos = new ArrayList<>(); // INICIALIZAÇÃO DA NOVA LISTA
         this.vagaAtual = null;
         inicializarHabilidadesPorArea();
     }
@@ -170,6 +173,17 @@ public class Jogador {
     public void setHabilidade(String habilidade, NivelHabilidade novoNivel) {
         this.habilidades.put(habilidade, novoNivel);
         System.out.println("Habilidade " + habilidade + " agora está no nível " + novoNivel.getNomeExibicao() + "!");
+    }
+
+    // NOVOS MÉTODOS para rastrear cursos
+    public void completarCurso(Curso curso) {
+        if (!this.cursosConcluidos.contains(curso)) {
+            this.cursosConcluidos.add(curso);
+        }
+    }
+
+    public boolean jaConcluiuCurso(Curso curso) {
+        return this.cursosConcluidos.contains(curso);
     }
 
     // --- Getters e Setters ---

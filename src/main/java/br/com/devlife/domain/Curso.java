@@ -1,5 +1,6 @@
 package br.com.devlife.domain;
 
+import br.com.devlife.domain.enums.NivelCargo;
 import br.com.devlife.domain.enums.NivelHabilidade;
 import java.util.Collections;
 import java.util.Map;
@@ -15,14 +16,16 @@ public final class Curso {
     private final Map<String, NivelHabilidade> requisitos;
     private final int energiaCustoPorDia;
     private final int sanidadeCustoPorDia;
+    private final NivelCargo nivelMinimo; // NOVO ATRIBUTO
 
-    public Curso(String nome, double custoDinheiro, int duracaoEmDias, String habilidadeEnsinada, NivelHabilidade nivelResultante, int xpGanho, int energiaCustoPorDia, int sanidadeCustoPorDia, Map<String, NivelHabilidade> requisitos) {
+    public Curso(String nome, double custoDinheiro, int duracaoEmDias, String habilidadeEnsinada, NivelHabilidade nivelResultante, int xpGanho, int energiaCustoPorDia, int sanidadeCustoPorDia, NivelCargo nivelMinimo, Map<String, NivelHabilidade> requisitos) {
         this.nome = nome;
         this.custoDinheiro = custoDinheiro;
         this.duracaoEmDias = duracaoEmDias;
         this.habilidadeEnsinada = habilidadeEnsinada;
         this.nivelResultante = nivelResultante;
         this.xpGanho = xpGanho;
+        this.nivelMinimo = nivelMinimo;
         this.energiaCustoPorDia = energiaCustoPorDia;
         this.sanidadeCustoPorDia = sanidadeCustoPorDia;
         this.requisitos = (requisitos != null) ? Collections.unmodifiableMap(requisitos) : Collections.emptyMap();
@@ -38,6 +41,7 @@ public final class Curso {
     public int getEnergiaCustoPorDia() { return energiaCustoPorDia; }
     public int getSanidadeCustoPorDia() { return sanidadeCustoPorDia; }
     public Map<String, NivelHabilidade> getRequisitos() { return requisitos; } // NOVO GETTER
+    public NivelCargo getNivelMinimo() { return nivelMinimo; } // NOVO GETTER
 
     @Override
     public boolean equals(Object o) {
