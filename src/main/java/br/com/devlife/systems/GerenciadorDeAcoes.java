@@ -12,6 +12,7 @@ import br.com.devlife.domain.Vaga;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class GerenciadorDeAcoes {
@@ -20,121 +21,117 @@ public final class GerenciadorDeAcoes {
     private final List<AcaoLazer> todasAsAcoesLazer;
     private final List<Vaga> todasAsVagas;
     private final List<Evento> todosOsEventos;
+    private final Set<String> softSkills;
 
     public GerenciadorDeAcoes() {
-        // ... (A inicialização da lista todosOsProjetos permanece a mesma)
+        this.softSkills = Set.of(
+            "Inglês Técnico", "Comunicação", "Trabalho em Equipe", "Adaptabilidade",
+            "Flexibilidade", "Colaboração", "Resolução de Problemas", "Pensamento Crítico",
+            "Inteligência Emocional", "Liderança", "Organização", "Proatividade",
+            "Ética no Trabalho", "Negociação", "Visão de Negócio", "Mentoria em Code Review"
+        );
+        // MUDANÇA: REQUISITOS DOS PROJETOS SINCRONIZADOS COM O NOVO CATÁLOGO DE CURSOS
         this.todosOsProjetos = List.of(
-                // --- ESTAGIARIO_INICIO ---
-                // Front-end
-                new Projeto("Clone de Blog Simples", "Recriar o layout de um blog famoso.", 150, 100.00, 45, 15, 10, 3, NivelCargo.ESTAGIARIO_INICIO, Map.of("HTML", NivelHabilidade.INICIANTE)),
-                new Projeto("Página Pessoal de Portfólio", "Desenvolver uma página de portfólio estática.", 200, 150.00, 55, 20, 15, 4, NivelCargo.ESTAGIARIO_INICIO, Map.of("HTML", NivelHabilidade.INICIANTE, "CSS", NivelHabilidade.INICIANTE)),
-                new Projeto("Formulário de Contato com JS", "Criar um formulário com validação em JS.", 250, 180.00, 65, 25, 20, 5, NivelCargo.ESTAGIARIO_INICIO, Map.of("JavaScript", NivelHabilidade.INICIANTE)),
-                // Back-end
-                new Projeto("Script 'Hello World' em Java", "Compilar e rodar um programa Java simples.", 150, 100.00, 45, 15, 10, 3, NivelCargo.ESTAGIARIO_INICIO, Map.of("Java", NivelHabilidade.INICIANTE)),
-                new Projeto("Consulta SQL Simples", "Escrever uma query SELECT para buscar usuários.", 200, 120.00, 55, 20, 15, 4, NivelCargo.ESTAGIARIO_INICIO, Map.of("SQL", NivelHabilidade.INICIANTE)),
-                new Projeto("Endpoint 'Health Check' de API", "Criar um endpoint que retorna 'status: ok'.", 250, 180.00, 65, 25, 20, 5, NivelCargo.ESTAGIARIO_INICIO, Map.of("API REST", NivelHabilidade.INICIANTE)),
+            // --- ESTAGIARIO_INICIO ---
+            new Projeto("Documentar Código Existente", "Escrever comentários em um módulo simples.", 150, 100.00, 20, 5, 10, 3, NivelCargo.ESTAGIARIO_INICIO, Map.of("Lógica de Programação", NivelHabilidade.INICIANTE)),
+            new Projeto("Criar Relatório Simples", "Extrair dados e montar um relatório básico.", 200, 150.00, 25, 8, 15, 4, NivelCargo.ESTAGIARIO_INICIO, Map.of("Pacote Office", NivelHabilidade.INICIANTE)),
+            new Projeto("Configurar Repositório Git", "Criar um repositório e fazer o primeiro commit.", 250, 180.00, 15, 2, 20, 2, NivelCargo.ESTAGIARIO_INICIO, Map.of("Git e GitHub", NivelHabilidade.INICIANTE)),
+            new Projeto("Página de Portfólio Estática", "Desenvolver uma página de portfólio.", 300, 200.00, 30, 10, 25, 5, NivelCargo.ESTAGIARIO_INICIO, Map.of("HTML5 e CSS3", NivelHabilidade.INICIANTE)),
+            new Projeto("Consulta SQL Básica", "Escrever uma query SELECT para buscar clientes.", 350, 220.00, 35, 12, 20, 4, NivelCargo.ESTAGIARIO_INICIO, Map.of("SQL", NivelHabilidade.INICIANTE)),
+            new Projeto("Traduzir Documentação Técnica", "Traduzir um pequeno manual para o inglês.", 400, 250.00, 20, 5, 30, 6, NivelCargo.ESTAGIARIO_INICIO, Map.of("Inglês Técnico", NivelHabilidade.INICIANTE)),
 
-                // --- ESTAGIARIO ---
-                // Front-end
-                new Projeto("Componente de Galeria de Imagens", "Criar um componente reutilizável com JS.", 500, 350.00, 80, 30, 30, 7, NivelCargo.ESTAGIARIO, Map.of("JavaScript", NivelHabilidade.INTERMEDIARIO)),
-                new Projeto("Ajuste de Responsividade", "Corrigir layout em um site para dispositivos móveis.", 400, 300.00, 60, 35, 25, 5, NivelCargo.ESTAGIARIO, Map.of("CSS", NivelHabilidade.INTERMEDIARIO)),
-                new Projeto("Consumir API com Fetch", "Exibir dados de uma API externa em uma página.", 600, 400.00, 75, 28, 35, 6, NivelCargo.ESTAGIARIO, Map.of("JavaScript", NivelHabilidade.INTERMEDIARIO, "API REST", NivelHabilidade.INICIANTE)),
-                // Back-end
-                new Projeto("CRUD Básico de Usuários", "Criar um sistema de Cadastro/Leitura/Update/Delete.", 700, 450.00, 90, 40, 40, 8, NivelCargo.ESTAGIARIO, Map.of("Java", NivelHabilidade.INTERMEDIARIO, "SQL", NivelHabilidade.INICIANTE)),
-                new Projeto("Sistema de Login Simples", "Implementar um sistema de autenticação.", 800, 500.00, 95, 45, 45, 10, NivelCargo.ESTAGIARIO, Map.of("Java", NivelHabilidade.INTERMEDIARIO)),
-                new Projeto("Otimização de Query", "Refatorar uma query SQL lenta em um sistema.", 750, 480.00, 60, 50, 20, 4, NivelCargo.ESTAGIARIO, Map.of("SQL", NivelHabilidade.INTERMEDIARIO)),
+            // --- ESTAGIARIO ---
+            new Projeto("API Simples com Node.js", "Criar uma API com uma rota.", 500, 350.00, 40, 15, 30, 7, NivelCargo.ESTAGIARIO, Map.of("Node.js", NivelHabilidade.INICIANTE)),
+            new Projeto("API Simples com Flask", "Criar uma API com uma rota.", 500, 350.00, 40, 15, 30, 7, NivelCargo.ESTAGIARIO, Map.of("Flask", NivelHabilidade.INICIANTE)),
+            new Projeto("Relatório com SQL Join", "Criar uma consulta que une duas tabelas.", 600, 400.00, 30, 18, 25, 5, NivelCargo.ESTAGIARIO, Map.of("SQL", NivelHabilidade.INTERMEDIARIO)),
+            new Projeto("Análise de Logs de Segurança", "Revisar logs para encontrar anomalias.", 700, 450.00, 35, 20, 40, 6, NivelCargo.ESTAGIARIO, Map.of("IDS/IPS", NivelHabilidade.INICIANTE)),
+            new Projeto("CRUD Básico de Usuários", "Criar um sistema de Cadastro/Leitura/Update/Delete.", 800, 500.00, 50, 22, 45, 8, NivelCargo.ESTAGIARIO, Map.of("Java", NivelHabilidade.INTERMEDIARIO, "SQL", NivelHabilidade.INICIANTE)),
+            new Projeto("Página com JS Interativo", "Criar uma página com manipulação de DOM.", 550, 380.00, 45, 12, 35, 7, NivelCargo.ESTAGIARIO, Map.of("JavaScript", NivelHabilidade.INTERMEDIARIO)),
 
-                // --- JUNIOR ---
-                // Front-end
-                new Projeto("Dashboard com Gráficos", "Criar uma página de admin com gráficos usando uma lib.", 1500, 900.00, 100, 40, 80, 10, NivelCargo.JUNIOR, Map.of("JavaScript", NivelHabilidade.AVANCADO)),
-                new Projeto("Configurar Rotas em SPA", "Estruturar a navegação de uma Single Page Application.", 1200, 800.00, 85, 38, 90, 8, NivelCargo.JUNIOR, Map.of("JavaScript", NivelHabilidade.INTERMEDIARIO)),
-                new Projeto("Teste de Componentes com Jest", "Escrever testes unitários para componentes JS.", 1800, 1000.00, 110, 50, 100, 12, NivelCargo.JUNIOR, Map.of("JavaScript", NivelHabilidade.AVANCADO)),
-                // Back-end
-                new Projeto("Integração com Gateway de Pagamento", "Conectar a aplicação a um sistema de pagamentos.", 2500, 1500.00, 130, 60, 120, 15, NivelCargo.JUNIOR, Map.of("API REST", NivelHabilidade.INTERMEDIARIO)),
-                new Projeto("Implementar Autenticação JWT", "Adicionar segurança baseada em token na API.", 2200, 1300.00, 120, 55, 110, 14, NivelCargo.JUNIOR, Map.of("Java", NivelHabilidade.AVANCADO, "API REST", NivelHabilidade.INTERMEDIARIO)),
-                new Projeto("Refatoração de Módulo Legado", "Modernizar um módulo antigo do sistema.", 2800, 1600.00, 140, 65, 50, 18, NivelCargo.JUNIOR, Map.of("Java", NivelHabilidade.AVANCADO)),
+            // --- JUNIOR ---
+            new Projeto("Dashboard com Gráficos", "Criar uma página de admin com gráficos usando uma lib.", 1500, 900.00, 50, 20, 80, 10, NivelCargo.JUNIOR, Map.of("JavaScript", NivelHabilidade.AVANCADO)),
+            new Projeto("Configurar Rotas em SPA", "Estruturar a navegação de uma Single Page Application.", 1200, 800.00, 45, 18, 90, 8, NivelCargo.JUNIOR, Map.of("JavaScript", NivelHabilidade.INTERMEDIARIO, "React.js", NivelHabilidade.INICIANTE)),
+            new Projeto("Teste de Componentes com Jest", "Escrever testes unitários para componentes JS.", 1800, 1000.00, 60, 25, 100, 12, NivelCargo.JUNIOR, Map.of("JavaScript", NivelHabilidade.AVANCADO)),
+            new Projeto("Integração com Gateway de Pagamento", "Conectar a aplicação a um sistema de pagamentos.", 2500, 1500.00, 70, 30, 120, 15, NivelCargo.JUNIOR, Map.of("API REST", NivelHabilidade.INTERMEDIARIO, "Java", NivelHabilidade.INTERMEDIARIO)),
+            new Projeto("Implementar Autenticação JWT", "Adicionar segurança baseada em token na API.", 2200, 1300.00, 65, 28, 110, 14, NivelCargo.JUNIOR, Map.of("Java", NivelHabilidade.AVANCADO, "API REST", NivelHabilidade.INTERMEDIARIO)),
+            new Projeto("Refatoração de Módulo Legado", "Modernizar um módulo antigo do sistema.", 2800, 1600.00, 80, 35, 50, 18, NivelCargo.JUNIOR, Map.of("Java", NivelHabilidade.AVANCADO)),
 
-                // --- PLENO ---
-                // Front-end
-                new Projeto("Otimizar Performance de Carregamento", "Aplicar lazy loading e code splitting.", 3500, 2500.00, 120, 60, 150, 20, NivelCargo.PLENO, Map.of("JavaScript", NivelHabilidade.AVANCADO)),
-                new Projeto("Auditoria de Acessibilidade (A11Y)", "Corrigir problemas de acessibilidade em um site.", 3000, 2200.00, 80, 35, 180, 15, NivelCargo.PLENO, Map.of("HTML", NivelHabilidade.AVANCADO)),
-                new Projeto("Criar uma Biblioteca de Componentes", "Desenvolver componentes reutilizáveis para a equipe.", 4500, 3500.00, 140, 65, 200, 25, NivelCargo.PLENO, Map.of("JavaScript", NivelHabilidade.AVANCADO)),
-                // Back-end
-                new Projeto("Desenvolver Microserviço de Notificações", "Criar um serviço para enviar e-mails/SMS.", 4000, 3000.00, 125, 65, 160, 22, NivelCargo.PLENO, Map.of("Java", NivelHabilidade.AVANCADO, "API REST", NivelHabilidade.AVANCADO)),
-                new Projeto("Implementar Cache em API Crítica", "Adicionar Redis para otimizar performance.", 5000, 4000.00, 145, 80, 140, 18, NivelCargo.PLENO, Map.of("Java", NivelHabilidade.AVANCADO)),
-                new Projeto("Migração de Banco de Dados", "Planejar e executar a migração para um novo SGBD.", 5500, 4500.00, 170, 95, 180, 30, NivelCargo.PLENO, Map.of("SQL", NivelHabilidade.AVANCADO)),
+            // --- PLENO ---
+            new Projeto("Otimizar Performance de Carregamento", "Aplicar lazy loading e code splitting.", 3500, 2500.00, 60, 30, 150, 20, NivelCargo.PLENO, Map.of("JavaScript", NivelHabilidade.AVANCADO)),
+            new Projeto("Implementar Pipeline de CI/CD", "Automatizar o deploy com Docker e Kubernetes.", 4500, 3500.00, 70, 35, 200, 25, NivelCargo.PLENO, Map.of("Kubernetes", NivelHabilidade.INICIANTE, "AWS", NivelHabilidade.INICIANTE)),
+            new Projeto("Desenvolver Microserviço de Notificações", "Criar um serviço com Kafka.", 4000, 3000.00, 65, 33, 160, 22, NivelCargo.PLENO, Map.of("Java", NivelHabilidade.AVANCADO, "API REST", NivelHabilidade.AVANCADO, "Kafka", NivelHabilidade.INICIANTE)),
+            new Projeto("Implementar Cache em API Crítica", "Adicionar Redis para otimizar performance.", 5000, 4000.00, 75, 40, 140, 18, NivelCargo.PLENO, Map.of("Java", NivelHabilidade.AVANCADO, "Redis", NivelHabilidade.INICIANTE)),
+            new Projeto("Migração de Banco de Dados", "Planejar e executar a migração para um novo SGBD.", 5500, 4500.00, 90, 50, 180, 30, NivelCargo.PLENO, Map.of("SQL", NivelHabilidade.AVANCADO)),
+            new Projeto("Mentoria de Desenvolvedor Júnior", "Acompanhar e guiar um dev júnior.", 3000, 1000.00, 20, -10, 250, 20, NivelCargo.PLENO, Map.of("Liderança", NivelHabilidade.INICIANTE)),
 
-                // --- SENIOR ---
-                // Front-end
-                new Projeto("Desenhar Arquitetura Front-end", "Definir o blueprint de um novo sistema web.", 7000, 5000.00, 100, 60, 300, 25, NivelCargo.SENIOR, Map.of()),
-                new Projeto("Liderar Migração de Framework", "Planejar e guiar a equipe na migração de jQuery para React.", 9000, 6000.00, 130, 85, 400, 35, NivelCargo.SENIOR, Map.of()),
-                new Projeto("Prova de Conceito com WebAssembly", "Pesquisar e testar o uso de Wasm no produto.", 6000, 4000.00, 120, 40, 350, 18, NivelCargo.SENIOR, Map.of()),
-                // Back-end
-                new Projeto("Planejar Migração para Microserviços", "Definir a estratégia de quebra de um monólito.", 10000, 7000.00, 125, 80, 450, 40, NivelCargo.SENIOR, Map.of()),
-                new Projeto("Liderar Resposta a Incidente Crítico", "Coordenar a equipe para resolver uma falha em produção.", 8000, 8000.00, 180, 120, 500, 7, NivelCargo.SENIOR, Map.of()),
-                new Projeto("Estruturar Processo de Code Review", "Definir e implementar a cultura de revisão de código.", 5000, 0.00, 65, 10, 800, 15, NivelCargo.SENIOR, Map.of())
+            // --- SENIOR ---
+            new Projeto("Desenhar Arquitetura de Novo Sistema", "Criar o blueprint para um novo produto.", 7000, 5000.00, 50, 30, 300, 25, NivelCargo.SENIOR, Map.of("Arquitetura de Microsserviços", NivelHabilidade.INICIANTE)),
+            new Projeto("Liderar Migração de Monólito", "Planejar e guiar a equipe na migração para microserviços.", 9000, 6000.00, 70, 45, 400, 35, NivelCargo.SENIOR, Map.of("Arquitetura de Microsserviços", NivelHabilidade.INICIANTE, "Liderança", NivelHabilidade.INICIANTE)),
+            new Projeto("Prova de Conceito com Nova Tecnologia", "Pesquisar e testar uma tecnologia emergente.", 6000, 4000.00, 60, 20, 350, 18, NivelCargo.SENIOR, Map.of()),
+            new Projeto("Liderar Resposta a Incidente Crítico", "Coordenar a equipe para resolver uma falha em produção.", 8000, 8000.00, 95, 60, 500, 7, NivelCargo.SENIOR, Map.of("Resolução de Problemas", NivelHabilidade.INICIANTE)),
+            new Projeto("Estruturar Processo de Code Review", "Definir e implementar a cultura de revisão de código.", 5000, 0.00, 30, -5, 800, 15, NivelCargo.SENIOR, Map.of("Mentoria em Code Review", NivelHabilidade.INICIANTE)),
+            new Projeto("Análise de Conformidade com LGPD", "Garantir que o sistema esteja em conformidade com a lei.", 6500, 4500.00, 40, 25, 200, 15, NivelCargo.SENIOR, Map.of("LGPD", NivelHabilidade.INICIANTE))
         );
 
-        // ... (A inicialização da lista todosOsCursos permanece a mesma)
-        this.todosOsCursos = List.of(
-                // Cursos de Habilidades Básicas (Estágio)
-                new Curso("Fundamentos de SO", 100.00, 3, "SO", NivelHabilidade.INICIANTE, 20, 6, 3, Map.of()),
-                new Curso("Pacote Office Essencial", 80.00, 2, "Pacote Office", NivelHabilidade.INICIANTE, 15, 4, 2, Map.of()),
-                new Curso("Lógica de Programação", 150.00, 5, "Lógica de Programação", NivelHabilidade.INICIANTE, 30, 10, 5, Map.of()),
-                new Curso("Git e GitHub para Iniciantes", 120.00, 3, "Git e GitHub", NivelHabilidade.INICIANTE, 25, 6, 3, Map.of()),
-                new Curso("Introdução ao Terminal", 90.00, 2, "Terminal", NivelHabilidade.INICIANTE, 20, 4, 2, Map.of()),
-                new Curso("SQL Básico", 200.00, 5, "SQL", NivelHabilidade.INICIANTE, 40, 10, 5, Map.of()),
+this.todosOsCursos = List.of(
+            // --- Hard Skills por Nível de Cargo ---
 
-                // Cursos de Habilidades Intermediárias (Júnior)
-                new Curso("HTML5 e CSS3", 200.00, 5, "HTML5 e CSS3", NivelHabilidade.INICIANTE, 40, 10, 5, Map.of()),
-                new Curso("OLHA AQUI → HTML5 e CSS3", 200.00, 5, "HTML5 e CSS3", NivelHabilidade.AVANCADO, 80, 10, 5, Map.of()),
-                new Curso("JavaScript Básico", 250.00, 7, "JavaScript", NivelHabilidade.INICIANTE, 50, 14, 7, Map.of()),
-                new Curso("OLHA AQUI → JavaScript Intermediário", 250.00, 14, "JavaScript", NivelHabilidade.INTERMEDIARIO, 80, 28, 14, Map.of()),
-                new Curso("Node.js Básico", 350.00, 7, "Node.js", NivelHabilidade.INICIANTE, 70, 14, 7, Map.of()),
-                new Curso("SQL Intermediário", 400.00, 10, "SQL", NivelHabilidade.INTERMEDIARIO, 80, 20, 10, Map.of("SQL", NivelHabilidade.INICIANTE)),
-                new Curso("Fundamentos de Flask", 320.00, 6, "Flask", NivelHabilidade.INICIANTE, 65, 12, 6, Map.of()),
-                new Curso("Fundamentos de Criptografia", 450.00, 8, "Criptografia", NivelHabilidade.INICIANTE, 90, 16, 8, Map.of()),
-                new Curso("IDS/IPS e Segurança de Redes", 500.00, 10, "IDS/IPS", NivelHabilidade.INICIANTE, 100, 20, 10, Map.of()),
-                new Curso("Gestão de Vulnerabilidades", 480.00, 9, "Gestão de Vulnerabilidade", NivelHabilidade.INICIANTE, 95, 18, 9, Map.of()),
+            // -- Cursos de Nível ESTAGIARIO_INICIO --
+            new Curso("Fundamentos de SO", 100.00, 3, "SO", NivelHabilidade.INICIANTE, 20, 5, 2, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Pacote Office Essencial", 80.00, 2, "Pacote Office", NivelHabilidade.INICIANTE, 15, 5, 1, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Lógica de Programação", 150.00, 5, "Lógica de Programação", NivelHabilidade.INICIANTE, 30, 8, 3, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Git e GitHub para Iniciantes", 120.00, 3, "Git e GitHub", NivelHabilidade.INICIANTE, 25, 7, 2, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Introdução ao Terminal", 90.00, 2, "Terminal", NivelHabilidade.INICIANTE, 20, 6, 2, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("SQL Básico", 200.00, 5, "SQL", NivelHabilidade.INICIANTE, 40, 10, 4, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("HTML5 e CSS3 Básico", 200.00, 5, "HTML5 e CSS3", NivelHabilidade.INICIANTE, 40, 8, 2, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("JavaScript Básico", 250.00, 7, "JavaScript", NivelHabilidade.INICIANTE, 50, 10, 5, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
 
-                // Cursos de Habilidades Avançadas (Pleno)
-                new Curso("React.js", 500.00, 12, "React.js", NivelHabilidade.INICIANTE, 120, 24, 12, Map.of("JavaScript", NivelHabilidade.INICIANTE)),
-                new Curso("Node.js Intermediário", 450.00, 10, "Node.js", NivelHabilidade.INTERMEDIARIO, 100, 20, 10, Map.of("Node.js", NivelHabilidade.INICIANTE)),
-                new Curso("Apache Kafka", 600.00, 15, "Kafka", NivelHabilidade.INICIANTE, 150, 30, 15, Map.of("Java", NivelHabilidade.INTERMEDIARIO)),
-                new Curso("AWS Cloud Practitioner", 700.00, 14, "AWS", NivelHabilidade.INICIANTE, 180, 28, 14, Map.of()),
-                new Curso("Docker e Kubernetes", 750.00, 16, "Kubernetes", NivelHabilidade.INICIANTE, 200, 32, 16, Map.of()),
-                new Curso("SQL Avançado", 550.00, 12, "SQL", NivelHabilidade.AVANCADO, 140, 24, 12, Map.of("SQL", NivelHabilidade.INTERMEDIARIO)),
-                new Curso("Business Intelligence (BI)", 650.00, 13, "BI", NivelHabilidade.INICIANTE, 160, 26, 13, Map.of()),
-                new Curso("Node.js Avançado", 550.00, 12, "Node.js", NivelHabilidade.AVANCADO, 140, 24, 12, Map.of("Node.js", NivelHabilidade.INTERMEDIARIO)),
+            // -- Cursos de Nível ESTAGIARIO --
+            new Curso("Node.js Básico", 350.00, 7, "Node.js", NivelHabilidade.INICIANTE, 70, 12, 5, NivelCargo.ESTAGIARIO, Map.of()),
+            new Curso("SQL Intermediário", 400.00, 10, "SQL", NivelHabilidade.INTERMEDIARIO, 80, 15, 7, NivelCargo.ESTAGIARIO, Map.of("SQL", NivelHabilidade.INICIANTE)),
+            new Curso("Fundamentos de Flask", 320.00, 6, "Flask", NivelHabilidade.INICIANTE, 65, 12, 5, NivelCargo.ESTAGIARIO, Map.of()),
+            new Curso("Fundamentos de Criptografia", 450.00, 8, "Criptografia", NivelHabilidade.INICIANTE, 90, 18, 10, NivelCargo.ESTAGIARIO, Map.of()),
+            new Curso("IDS/IPS e Segurança de Redes", 500.00, 10, "IDS/IPS", NivelHabilidade.INICIANTE, 100, 18, 10, NivelCargo.ESTAGIARIO, Map.of()),
+            new Curso("Gestão de Vulnerabilidades", 480.00, 9, "Gestão de Vulnerabilidade", NivelHabilidade.INICIANTE, 95, 15, 8, NivelCargo.ESTAGIARIO, Map.of()),
 
-                // Cursos de Habilidades Sênior
-                new Curso("Dominando a LGPD", 800.00, 10, "LGPD", NivelHabilidade.INICIANTE, 220, 20, 10, Map.of()),
-                new Curso("Arquitetura de Microsserviços", 900.00, 20, "Arquitetura de Microsserviços", NivelHabilidade.INICIANTE, 250, 40, 20, Map.of("Java", NivelHabilidade.AVANCADO)),
-                new Curso("Mentoria em Code Review (Soft Skill)", 400.00, 5, "Mentoria em Code Review", NivelHabilidade.INICIANTE, 100, 10, 5, Map.of()),
-                new Curso("AWS Solutions Architect Associate", 1200.00, 25, "AWS", NivelHabilidade.INTERMEDIARIO, 300, 50, 25, Map.of("AWS", NivelHabilidade.INICIANTE)),
-                new Curso("Redis para Caching Avançado", 700.00, 9, "Redis", NivelHabilidade.INICIANTE, 180, 18, 9, Map.of()),
-                new Curso("Mandarim Básico", 1500.00, 30, "Mandarim", NivelHabilidade.INICIANTE, 150, 60, 30, Map.of()),
-                new Curso("Mandarim Avançado", 2000.00, 40, "Mandarim", NivelHabilidade.AVANCADO, 200, 80, 40, Map.of("Mandarim", NivelHabilidade.INICIANTE)),
-                new Curso("Apache Spark e Big Data", 1800.00, 28, "Spark", NivelHabilidade.INICIANTE, 400, 56, 28, Map.of()),
-                new Curso("Kubeflow e MLOps", 2200.00, 35, "Kubeflow", NivelHabilidade.INICIANTE, 500, 70, 35, Map.of("Kubernetes", NivelHabilidade.INICIANTE)),
+            // -- Cursos de Nível JUNIOR --
+            new Curso("React.js", 500.00, 12, "React.js", NivelHabilidade.INICIANTE, 120, 15, 8, NivelCargo.JUNIOR, Map.of("JavaScript", NivelHabilidade.INICIANTE)),
+            new Curso("Node.js Intermediário", 450.00, 10, "Node.js", NivelHabilidade.INTERMEDIARIO, 100, 18, 8, NivelCargo.JUNIOR, Map.of("Node.js", NivelHabilidade.INICIANTE)),
+            new Curso("Apache Kafka", 600.00, 15, "Kafka", NivelHabilidade.INICIANTE, 150, 20, 12, NivelCargo.JUNIOR, Map.of("Java", NivelHabilidade.INTERMEDIARIO)),
+            new Curso("AWS Cloud Practitioner", 700.00, 14, "AWS", NivelHabilidade.INICIANTE, 180, 15, 10, NivelCargo.JUNIOR, Map.of()),
+            new Curso("Docker e Kubernetes", 750.00, 16, "Kubernetes", NivelHabilidade.INICIANTE, 200, 20, 12, NivelCargo.JUNIOR, Map.of()),
+            new Curso("SQL Avançado", 550.00, 12, "SQL", NivelHabilidade.AVANCADO, 140, 18, 10, NivelCargo.JUNIOR, Map.of("SQL", NivelHabilidade.INTERMEDIARIO)),
+            new Curso("Business Intelligence (BI)", 650.00, 13, "BI", NivelHabilidade.INICIANTE, 160, 15, 8, NivelCargo.JUNIOR, Map.of()),
+            new Curso("Node.js Avançado", 550.00, 12, "Node.js", NivelHabilidade.AVANCADO, 140, 20, 10, NivelCargo.JUNIOR, Map.of("Node.js", NivelHabilidade.INTERMEDIARIO)),
 
-                // Cursos de Soft Skills
-                new Curso("Inglês Técnico I", 200.00, 10, "Inglês Técnico", NivelHabilidade.INICIANTE, 40, 20, 10, Map.of()),
-                new Curso("Inglês Técnico II", 250.00, 12, "Inglês Técnico", NivelHabilidade.INTERMEDIARIO, 50, 24, 12, Map.of("Inglês Técnico", NivelHabilidade.INICIANTE)),
-                new Curso("Comunicação Eficaz", 180.00, 4, "Comunicação", NivelHabilidade.INICIANTE, 35, 8, 4, Map.of()),
-                new Curso("Trabalho em Equipe", 220.00, 3, "Trabalho em Equipe", NivelHabilidade.INICIANTE, 45, 6, 3, Map.of()),
-                new Curso("Adaptabilidade Profissional", 210.00, 3, "Adaptabilidade", NivelHabilidade.INICIANTE, 40, 6, 3, Map.of()),
-                new Curso("Flexibilidade e Gestão de Mudanças", 230.00, 4, "Flexibilidade", NivelHabilidade.INICIANTE, 50, 8, 4, Map.of()),
-                new Curso("Colaboração e Feedback", 240.00, 3, "Colaboração", NivelHabilidade.INICIANTE, 55, 6, 3, Map.of()),
-                new Curso("Resolução de Problemas Complexos", 300.00, 5, "Resolução de Problemas", NivelHabilidade.INICIANTE, 70, 10, 5, Map.of()),
-                new Curso("Pensamento Crítico", 280.00, 4, "Pensamento Crítico", NivelHabilidade.INICIANTE, 65, 8, 4, Map.of()),
-                new Curso("Inteligência Emocional no Trabalho", 320.00, 5, "Inteligência Emocional", NivelHabilidade.INICIANTE, 75, 10, 5, Map.of()),
-                new Curso("Liderança para Iniciantes", 350.00, 6, "Liderança", NivelHabilidade.INICIANTE, 80, 12, 6, Map.of()),
-                new Curso("Organização e Gestão do Tempo", 180.00, 2, "Organização", NivelHabilidade.INICIANTE, 30, 4, 2, Map.of()),
-                new Curso("Proatividade e Iniciativa", 200.00, 3, "Proatividade", NivelHabilidade.INICIANTE, 40, 6, 3, Map.of()),
-                new Curso("Ética no Trabalho", 150.00, 2, "Ética no Trabalho", NivelHabilidade.INICIANTE, 25, 4, 2, Map.of()),
-                new Curso("Técnicas de Negociação", 380.00, 5, "Negociação", NivelHabilidade.INICIANTE, 85, 10, 5, Map.of()),
-                new Curso("Visão de Negócio para Devs", 420.00, 6, "Visão de Negócio", NivelHabilidade.INICIANTE, 90, 12, 6, Map.of())
+            // -- Cursos de Nível PLENO --
+            new Curso("Dominando a LGPD", 800.00, 10, "LGPD", NivelHabilidade.INICIANTE, 220, 10, 5, NivelCargo.PLENO, Map.of()),
+            new Curso("Arquitetura de Microsserviços", 900.00, 20, "Arquitetura de Microsserviços", NivelHabilidade.INICIANTE, 250, 25, 15, NivelCargo.PLENO, Map.of("Java", NivelHabilidade.AVANCADO)),
+            new Curso("AWS Solutions Architect", 1200.00, 25, "AWS", NivelHabilidade.INTERMEDIARIO, 300, 20, 12, NivelCargo.PLENO, Map.of("AWS", NivelHabilidade.INICIANTE)),
+            new Curso("Redis para Caching Avançado", 700.00, 9, "Redis", NivelHabilidade.INICIANTE, 180, 18, 8, NivelCargo.PLENO, Map.of()),
+            new Curso("Apache Spark e Big Data", 1800.00, 28, "Spark", NivelHabilidade.INICIANTE, 400, 25, 18, NivelCargo.PLENO, Map.of()),
+            new Curso("Kubeflow e MLOps", 2200.00, 35, "Kubeflow", NivelHabilidade.INICIANTE, 500, 30, 20, NivelCargo.PLENO, Map.of("Kubernetes", NivelHabilidade.INICIANTE)),
+
+            // --- Cursos de Soft Skills e Idiomas (Nível de Introdução: ESTAGIARIO_INICIO, mas visíveis para todos) ---
+            new Curso("Inglês Técnico I", 200.00, 10, "Inglês Técnico", NivelHabilidade.INICIANTE, 40, 5, 2, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Inglês Técnico II", 250.00, 12, "Inglês Técnico", NivelHabilidade.INTERMEDIARIO, 50, 7, 3, NivelCargo.ESTAGIARIO_INICIO, Map.of("Inglês Técnico", NivelHabilidade.INICIANTE)),
+            new Curso("Mandarim Básico", 1500.00, 30, "Mandarim", NivelHabilidade.INICIANTE, 150, 10, 8, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Mandarim Avançado", 2000.00, 40, "Mandarim", NivelHabilidade.AVANCADO, 200, 15, 10, NivelCargo.ESTAGIARIO_INICIO, Map.of("Mandarim", NivelHabilidade.INICIANTE)),
+            new Curso("Comunicação Eficaz", 180.00, 4, "Comunicação", NivelHabilidade.INICIANTE, 35, 3, 0, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Trabalho em Equipe", 220.00, 3, "Trabalho em Equipe", NivelHabilidade.INICIANTE, 45, 4, 1, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Adaptabilidade Profissional", 210.00, 3, "Adaptabilidade", NivelHabilidade.INICIANTE, 40, 2, 0, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Flexibilidade e Gestão de Mudanças", 230.00, 4, "Flexibilidade", NivelHabilidade.INICIANTE, 50, 3, 1, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Colaboração e Feedback", 240.00, 3, "Colaboração", NivelHabilidade.INICIANTE, 55, 4, 1, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Resolução de Problemas Complexos", 300.00, 5, "Resolução de Problemas", NivelHabilidade.INICIANTE, 70, 8, 4, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Pensamento Crítico", 280.00, 4, "Pensamento Crítico", NivelHabilidade.INICIANTE, 65, 7, 3, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Inteligência Emocional no Trabalho", 320.00, 5, "Inteligência Emocional", NivelHabilidade.INICIANTE, 75, 4, -2, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Liderança para Iniciantes", 350.00, 6, "Liderança", NivelHabilidade.INICIANTE, 80, 5, 2, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Organização e Gestão do Tempo", 180.00, 2, "Organização", NivelHabilidade.INICIANTE, 30, 2, 0, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Proatividade e Iniciativa", 200.00, 3, "Proatividade", NivelHabilidade.INICIANTE, 40, 3, 1, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Ética no Trabalho", 150.00, 2, "Ética no Trabalho", NivelHabilidade.INICIANTE, 25, 2, 0, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Técnicas de Negociação", 380.00, 5, "Negociação", NivelHabilidade.INICIANTE, 85, 8, 5, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Visão de Negócio para Devs", 420.00, 6, "Visão de Negócio", NivelHabilidade.INICIANTE, 90, 10, 5, NivelCargo.ESTAGIARIO_INICIO, Map.of()),
+            new Curso("Mentoria em Code Review (Soft Skill)", 400.00, 5, "Mentoria em Code Review", NivelHabilidade.INICIANTE, 100, 5, -2, NivelCargo.PLENO, Map.of())
         );
 
         // ... (A inicialização da lista todasAsVagas permanece a mesma)
@@ -234,8 +231,32 @@ public final class GerenciadorDeAcoes {
                 .collect(Collectors.toList());
     }
 
+    // MÉTODO COMPLETAMENTE REESCRITO COM A NOVA LÓGICA
     public List<Curso> getCursosDisponiveis(Jogador jogador) {
-        return List.copyOf(todosOsCursos);
+        return todosOsCursos.stream()
+            // Filtro 1: O jogador pode pagar pelo curso (não é estritamente necessário aqui se verificado no motor, mas é uma boa prática)
+            .filter(curso -> jogador.temDinheiroSuficiente(curso.getCustoDinheiro()))
+            
+            // Filtro 2: O jogador ainda não concluiu este curso
+            .filter(curso -> !jogador.jaConcluiuCurso(curso))
+
+            // Filtro 3: O jogador tem os pré-requisitos para o curso (corrige "Inglês II" sem "Inglês I")
+            .filter(curso -> jogadorTemRequisitosParaCurso(jogador, curso))
+            
+            // Filtro 4: O curso representa um avanço real para o jogador
+            .filter(curso -> cursoMelhoraHabilidade(jogador, curso))
+
+            // Filtro 5: Lógica de Nível de Cargo
+            .filter(curso -> {
+                boolean isSoftSkill = softSkills.contains(curso.getHabilidadeEnsinada());
+                if (isSoftSkill) {
+                    return true; // Se for soft skill, sempre aparece (se passar nos outros filtros)
+                } else {
+                    // Se for hard skill, só aparece se o nível do jogador for igual ao do curso
+                    return jogador.getCargo() == curso.getNivelMinimo();
+                }
+            })
+            .collect(Collectors.toList());
     }
 
     public List<Evento> getEventosDisponiveis(Jogador jogador) {
@@ -269,5 +290,21 @@ public final class GerenciadorDeAcoes {
             }
         }
         return true;
+    }
+
+        private boolean jogadorTemRequisitosParaCurso(Jogador jogador, Curso curso) {
+        for (Map.Entry<String, NivelHabilidade> requisito : curso.getRequisitos().entrySet()) {
+            NivelHabilidade nivelRequerido = requisito.getValue();
+            NivelHabilidade nivelJogador = jogador.getNivelHabilidade(requisito.getKey());
+            if (nivelJogador.getValor() < nivelRequerido.getValor()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean cursoMelhoraHabilidade(Jogador jogador, Curso curso) {
+        NivelHabilidade nivelAtual = jogador.getNivelHabilidade(curso.getHabilidadeEnsinada());
+        return nivelAtual.getValor() < curso.getNivelResultante().getValor();
     }
 }
